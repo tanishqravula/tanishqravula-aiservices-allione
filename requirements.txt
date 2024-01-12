@@ -2,7 +2,7 @@ streamlit
 pandas
 google-generativeai
 Pillow
-fitz
+PyPDF2
 PyMuPDF
 python-pptx
 python-docx
