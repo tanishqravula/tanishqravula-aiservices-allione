@@ -4,16 +4,14 @@ import google.generativeai as genai
 import re
 from PIL import Image
 import requests
-import fitz 
+import PyPDF2 
 from docx import Document
 from pptx import Presentation
 import io
 from bs4 import BeautifulSoup
 import textwrap
 from youtube_transcript_api import YouTubeTranscriptApi
-from transformers import BartForConditionalGeneration, BartTokenizer
 import speech_recognition as sr
-from transformers import pipeline
 
 #Je t'aime plus que les mots,
 #Plus que les sentiments,
@@ -344,11 +342,11 @@ if prompt:
         file_extension = docattachment.name.split('.')[-1].lower()
         try:
             if file_extension == 'pdf':
-                with fitz.open(stream=docattachment.read(), filetype="pdf") as pdf_document:
+                if docattachment is not None:
+                    reader = PyPDF2.PdfReader(docattachment)
                     doc_content = ""
-                    for page_num in range(pdf_document.page_count):
-                        page = pdf_document[page_num]
-                        doc_content += page.get_text()
+                    for page_num in range(len(reader.pages)):
+                        doc_content += reader.pages[page_num].extract_text()
             elif file_extension == 'docx':
                 docx_content = ""
                 docx_file = docattachment.read()
