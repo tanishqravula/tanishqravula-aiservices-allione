@@ -1,0 +1,13 @@
+streamlit
+pandas
+google-generativeai
+Pillow
+fitz
+PyMuPDF
+python-pptx
+python-docx
+textwrap3
+youtube-transcript-api
+SpeechRecognition
+beautifulsoup4
+requests
