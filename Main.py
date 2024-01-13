@@ -4,7 +4,7 @@ import google.generativeai as genai
 import re
 from PIL import Image
 import requests
-import PyPDF2 
+import PyPDF2
 from docx import Document
 from pptx import Presentation
 import io
@@ -12,7 +12,9 @@ from bs4 import BeautifulSoup
 import textwrap
 from youtube_transcript_api import YouTubeTranscriptApi
 import speech_recognition as sr
-
+import openpyxl
+import csv
+from io import StringIO
 #Je t'aime plus que les mots,
 #Plus que les sentiments,
 #Plus que la vie elle-même
@@ -391,13 +393,33 @@ if prompt:
 
 
     if csvexcelattachment:
-        try:
-            df = pd.read_csv(csvexcelattachment)
-        except:
-            df = pd.read_excel(csvexcelattachment)
-        txt += '   Dataframe: \n' + str(df)
+        file_name = csvexcelattachment.name
+        file_extension = file_name.split('.')[-1].lower()
+
+        if file_extension == 'csv':
+            content = csvexcelattachment.read().decode("ISO-8859-1")
+            csvfile = StringIO(content)
+            reader = csv.reader(csvfile)
+            for row in reader:
+                    txt += " ".join(row)
+        elif file_extension in ['xlsx', 'xls']:
+            wb = openpyxl.load_workbook(csvexcelattachment)
+            sheet = wb.active
+            for row in sheet.iter_rows():
+            # extract each cell value
+                for cell in row:
+                    txt += str(cell.value)
+        else:
+            st.error("Unsupported file type. Please upload a CSV or Excel file.")
+
     if website_chat:
         txt=website_text
+        prmt  = {'role': 'user', 'parts':[prompt+txt]}
+    else:
+        st.write('')
+        prmt  = {'role': 'user', 'parts':[prompt+txt]}
+    if youtube_chat:
+        txt=full_transcript 
         prmt  = {'role': 'user', 'parts':[prompt+txt]}
     else:
         st.write('')
@@ -410,12 +432,6 @@ if prompt:
           txt += '   Genera un grafo con graphviz en .dot \n'
         else:
           txt += '   Generate a graph with graphviz in .dot \n'
-    if youtube_chat:
-        txt=full_transcript 
-        prmt  = {'role': 'user', 'parts':[prompt+txt]}
-    else:
-        st.write('')
-        prmt  = {'role': 'user', 'parts':[prompt+txt]}
 
     if len(txt) > 900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000:
         txt = txt[:900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000] + '...'
@@ -436,14 +452,17 @@ if prompt:
       spinertxt = 'Wait a moment, I am thinking...'
     with st.spinner(spinertxt):
         if len(prmt['parts']) > 1:
-            response = vision.generate_content(prmt['parts'],stream=True,safety_settings=[
+            response = vision.generate_content(
+             prmt['parts'],
+    stream=True,
+    safety_settings=[
         {
             "category": "HARM_CATEGORY_HARASSMENT",
             "threshold": "BLOCK_LOW_AND_ABOVE",
         },
         {
             "category": "HARM_CATEGORY_HATE_SPEECH",
-            "threshold": "BLOCK_LOW_AND_ABOVE",
+            "threshold": "MAY_BLOCK_LOW",
         },
     ]
 )
