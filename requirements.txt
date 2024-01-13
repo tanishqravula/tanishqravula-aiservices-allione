@@ -1,4 +1,5 @@
-streamlit==23.3.2
+streamlit
+pip==23.3.2
 pandas
 google-generativeai
 Pillow
