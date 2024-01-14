@@ -26,7 +26,7 @@ GOOGLE_API_KEY='AIzaSyBT3xgt_NZCLx2Auoyw0Dn3FBkgOIJqql4'
 
 st.set_page_config(
     page_title="Tanishq AI Chat",
-    page_icon="https://seeklogo.com/images/G/google-ai-logo-996E85F6FD-seeklogo.com.png",
+    page_icon="DALL·E 2024-01-15 00.41.44 - A cartoon image of a software developer surrounded by various AI tools. The character is whimsical and colorful, with exaggerated features typical of .png",
     layout="wide",
 )
 # Path: Main.py
@@ -34,7 +34,7 @@ st.set_page_config(
 #------------------------------------------------------------
 #HEADER
 st.markdown('''
-Powered by Tanishq <img src="https://seeklogo.com/images/G/google-ai-logo-996E85F6FD-seeklogo.com.png" width="20" height="20">
+Powered by Tanishq <img src="DALL·E 2024-01-15 00.41.44 - A cartoon image of a software developer surrounded by various AI tools. The character is whimsical and colorful, with exaggerated features typical of .png">
 ''', unsafe_allow_html=True)
 st.caption("By Tanishq Ravula")
 
