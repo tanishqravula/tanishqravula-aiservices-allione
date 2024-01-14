@@ -130,6 +130,28 @@ def extract_text_from_docx(docx_file):
                 text += cell.text + "\t"
             text += "\n"
     return text
+def extract_text_from_image(image_bytes):
+    image = Image.open(BytesIO(image_bytes))
+    text = pytesseract.image_to_string(image)
+    return text
+def extract_text_from_ppt(ppt_path):
+    presentation = Presentation(ppt_path)
+    text_content = ""
+
+    for slide_number, slide in enumerate(presentation.slides):
+        text_content += f"\n\nSlide {slide_number + 1}:\n"
+
+        for shape_number, shape in enumerate(slide.shapes):
+            if hasattr(shape, "text"):
+                text_content += shape.text + "\n"
+
+            if hasattr(shape, "image"):
+                image = shape.image
+                image_bytes = image.blob
+                image_text = extract_text_from_image(image_bytes)
+                text_content += f"Text from Image {shape_number + 1}:\n{image_text}\n"
+
+    return text_content
 
 
 
@@ -376,14 +398,7 @@ if prompt:
             elif file_extension == 'docx':
                 docx_content = extract_text_from_docx(docattachment)
             elif file_extension == 'ppt' or file_extension == 'pptx':
-                ppt_content = ""
-                ppt_file = docattachment.read()
-                presentation = Presentation(io.BytesIO(ppt_file))
-                for slide_num, slide in enumerate(presentation.slides):
-                    ppt_content += f'Slide {slide_num + 1}:\n'
-                    for shape in slide.shapes:
-                        if hasattr(shape, "text"):
-                             ppt_content += shape.text + '\n'
+                ppt_content =  extract_text_from_ppt(docattachment)
             else:
                 raise ValueError(f'Unsupported file format: {file_extension}')
 
