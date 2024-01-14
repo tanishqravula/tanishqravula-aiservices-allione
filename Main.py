@@ -4,6 +4,10 @@ import google.generativeai as genai
 import re
 import openpyxl
 from PIL import Image
+import pdf2image
+import pytesseract
+from pytesseract import Output, TesseractError
+from functions import convert_pdf_to_txt_pages, convert_pdf_to_txt_file, save_pages, displayPDF, images_to_txt
 import requests
 import PyPDF2 
 from docx import Document
@@ -353,14 +357,19 @@ if prompt:
         else:
           txt = '   Text file: \n' + txt
     if docattachment:
+        path =docattachment.read()
         file_extension = docattachment.name.split('.')[-1].lower()
         try:
             if file_extension == 'pdf':
+                
                 if docattachment is not None:
                     reader = PyPDF2.PdfReader(docattachment)
                     doc_content = ""
                     for page_num in range(len(reader.pages)):
                         doc_content += reader.pages[page_num].extract_text()
+                    text_data_images, nbPages_images = images_to_txt(path, 'eng')
+                    text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
+                    doc_content+ = text_data_text + "\n\n" + text_data_images
             elif file_extension == 'docx':
                 docx_content = extract_text_from_docx(docattachment)
             elif file_extension == 'ppt' or file_extension == 'pptx':
