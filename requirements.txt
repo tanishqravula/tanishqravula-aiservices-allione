@@ -11,3 +11,4 @@ youtube-transcript-api
 SpeechRecognition
 beautifulsoup4
 pdfplumber
+openpyxl
