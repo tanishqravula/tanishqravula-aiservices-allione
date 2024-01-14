@@ -12,3 +12,4 @@ SpeechRecognition
 beautifulsoup4
 pdfplumber
 openpyxl
+python-csv
