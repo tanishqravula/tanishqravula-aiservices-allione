@@ -368,7 +368,7 @@ if prompt:
         file_extension = docattachment.name.split('.')[-1].lower()
         try:
             if file_extension == 'pdf':
-                doc_content = extract_text_from_pdf(pdfattachment)
+                doc_content = extract_text_from_pdf(docattachment)
             elif file_extension == 'docx':
                 docx_content = extract_text_from_docx(docattachment)
             elif file_extension == 'ppt' or file_extension == 'pptx':
