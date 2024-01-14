@@ -33,7 +33,7 @@ st.set_page_config(
 #Author: Sergio Demis Lopez Martinez
 #------------------------------------------------------------
 #HEADER
-#st.markdown('''Powered by Tanishq ''', unsafe_allow_html=True)
+st.markdown('''Powered by Tanishq ''', unsafe_allow_html=True)
 
 image = Image.open("DALL·E 2024-01-15 00.41.44 - A cartoon image of a software developer surrounded by various AI tools. The character is whimsical and colorful, with exaggerated features typical of .png")
 
