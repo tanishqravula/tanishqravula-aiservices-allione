@@ -11,3 +11,6 @@ youtube-transcript-api
 SpeechRecognition
 beautifulsoup4
 openpyxl
+pdfminer==20191125
+pdf2image
+pytesseract
