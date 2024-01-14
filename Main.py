@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup
 import textwrap
 from youtube_transcript_api import YouTubeTranscriptApi
 import speech_recognition as sr
+from io import StringIO
 
 #Je t'aime plus que les mots,
 #Plus que les sentiments,
