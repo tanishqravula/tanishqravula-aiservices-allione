@@ -124,7 +124,7 @@ def extract_text_from_docx(docx_file):
     return text
 def extract_text_from_excel(excel_file):
     text = ""
-    df = pd.read_excel(excel_file, engine='openpyxl')
+    df = pd.read_excel(excel_file)
 
     for col in df.columns:
         text += f"{col}\t"
@@ -136,6 +136,7 @@ def extract_text_from_excel(excel_file):
         text += "\n"
 
     return text
+
 
 
 
