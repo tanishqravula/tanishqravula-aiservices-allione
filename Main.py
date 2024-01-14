@@ -8,7 +8,6 @@ import PyPDF2
 from docx import Document
 from pptx import Presentation
 import io
-import pdfplumber
 from bs4 import BeautifulSoup
 import textwrap
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -123,19 +122,6 @@ def extract_text_from_docx(docx_file):
                 text += cell.text + "\t"
             text += "\n"
     return text
-def extract_text_from_pdf(pdf_file):
-    with pdfplumber.open(pdf_file) as pdf:
-        text = ""
-        for page in pdf.pages:
-            # Extract plain text from the page
-            text += page.extract_text() + "\n"
-
-            # Extract text from tables
-            for table in page.extract_tables():
-                for row in table:
-                    text += "\t".join(row) + "\n"
-    return text
-
 
 
 
@@ -368,7 +354,11 @@ if prompt:
         file_extension = docattachment.name.split('.')[-1].lower()
         try:
             if file_extension == 'pdf':
-                doc_content = extract_text_from_pdf(docattachment)
+                if docattachment is not None:
+                    reader = PyPDF2.PdfReader(docattachment)
+                    doc_content = ""
+                    for page_num in range(len(reader.pages)):
+                        doc_content += reader.pages[page_num].extract_text()
             elif file_extension == 'docx':
                 docx_content = extract_text_from_docx(docattachment)
             elif file_extension == 'ppt' or file_extension == 'pptx':
