@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import google.generativeai as genai
 import re
+import openpyxl
+import csv
 from PIL import Image
 import requests
 import PyPDF2 
@@ -399,11 +401,24 @@ if prompt:
 
 
     if csvexcelattachment:
-        try:
-            df = pd.read_csv(csvexcelattachment)
-        except:
-            df = pd.read_excel(csvexcelattachment)
-        txt += '   Dataframe: \n' + str(df)
+        file_name = csvexcelattachment.name
+        file_extension = file_name.split('.')[-1].lower()
+
+        if file_extension == 'csv':
+            content = csvexcelattachment.read().decode("ISO-8859-1")
+            csvfile = StringIO(content)
+            reader = csv.reader(csvfile)
+            for row in reader:
+                    txt += " ".join(row)
+        elif file_extension in ['xlsx', 'xls']:
+            wb = openpyxl.load_workbook(csvexcelattachment)
+            sheet = wb.active
+            for row in sheet.iter_rows():
+            # extract each cell value
+                for cell in row:
+                    txt += str(cell.value)
+        else:
+            st.error("Unsupported file type. Please upload a CSV or Excel file.")
     if website_chat:
         txt=website_text
         prmt  = {'role': 'user', 'parts':[prompt+txt]}
