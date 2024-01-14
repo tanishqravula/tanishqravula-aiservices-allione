@@ -34,7 +34,7 @@ st.set_page_config(
 #------------------------------------------------------------
 #HEADER
 st.markdown('''
-Powered by Tanishq <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--iU3HTvsb--/c_imagga_scale,f_auto,fl_progressive,h_900,q_auto,w_1600/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/d2utudhcrkw5ev8f8j0a.jpg">
+Powered by Tanishq <img src="DALL·E 2024-01-15 00.41.44 - A cartoon image of a software developer surrounded by various AI tools. The character is whimsical and colorful, with exaggerated features typical of .png">
 ''', unsafe_allow_html=True)
 st.caption("By Tanishq Ravula")
 
