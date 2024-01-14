@@ -4,12 +4,11 @@ google-generativeai
 Pillow
 PyPDF2
 PyMuPDF
+python-csv
 python-pptx
 python-docx
 textwrap3
 youtube-transcript-api
 SpeechRecognition
 beautifulsoup4
-pdfplumber
 openpyxl
-python-csv
