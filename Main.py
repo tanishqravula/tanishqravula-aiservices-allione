@@ -367,9 +367,10 @@ if prompt:
                     doc_content = ""
                     for page_num in range(len(reader.pages)):
                         doc_content += reader.pages[page_num].extract_text()
-                    text_data_images, nbPages_images = images_to_txt(path, 'eng')
-                    text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
-                    doc_content+=text_data_text + "\n\n" + text_data_images
+                    texts, nbPages = images_to_txt(path, 'eng')
+                    text_data_f = "\n\n".join(texts)
+                    #text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
+                    doc_content+=text_data_f
             elif file_extension == 'docx':
                 docx_content = extract_text_from_docx(docattachment)
             elif file_extension == 'ppt' or file_extension == 'pptx':
