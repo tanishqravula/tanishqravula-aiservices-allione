@@ -122,21 +122,6 @@ def extract_text_from_docx(docx_file):
                 text += cell.text + "\t"
             text += "\n"
     return text
-def extract_text_from_excel(excel_file):
-    text = ""
-    df = pd.read_excel(excel_file)
-
-    for col in df.columns:
-        text += f"{col}\t"
-    text += "\n"
-
-    for _, row in df.iterrows():
-        for val in row:
-            text += f"{val}\t"
-        text += "\n"
-
-    return text
-
 
 
 
@@ -416,10 +401,9 @@ if prompt:
     if csvexcelattachment:
         try:
             df = pd.read_csv(csvexcelattachment)
-            txt += '   Dataframe: \n' + str(df)
         except:
-            txt= extract_text_from_excel(csvexcelattachment)
-        
+            df = pd.read_excel(csvexcelattachment)
+        txt += '   Dataframe: \n' + str(df)
     if website_chat:
         txt=website_text
         prmt  = {'role': 'user', 'parts':[prompt+txt]}
