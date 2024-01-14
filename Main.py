@@ -18,6 +18,7 @@ import textwrap
 from youtube_transcript_api import YouTubeTranscriptApi
 import speech_recognition as sr
 from io import StringIO
+from io import BytesIO
 
 #Je t'aime plus que les mots,
 #Plus que les sentiments,
