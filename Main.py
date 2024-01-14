@@ -110,6 +110,18 @@ def transcribe_video(video_url):
         audio = recognizer.record(source)
 
     return recognizer.recognize_google(audio)
+def extract_text_from_docx(docx_file):
+    doc = Document(docx_file)
+    text = ""
+    for paragraph in doc.paragraphs:
+        text += paragraph.text + "\n"
+
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                text += cell.text + "\t"
+            text += "\n"
+    return text
 
 
 
@@ -348,11 +360,7 @@ if prompt:
                     for page_num in range(len(reader.pages)):
                         doc_content += reader.pages[page_num].extract_text()
             elif file_extension == 'docx':
-                docx_content = ""
-                docx_file = docattachment.read()
-                document = Document(io.BytesIO(docx_file))
-                for paragraph in document.paragraphs:
-                    docx_content += paragraph.text + '\n'
+                docx_content = extract_text_from_docx(docattachment)
             elif file_extension == 'ppt' or file_extension == 'pptx':
                 ppt_content = ""
                 ppt_file = docattachment.read()
