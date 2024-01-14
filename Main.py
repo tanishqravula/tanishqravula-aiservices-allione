@@ -3,7 +3,6 @@ import pandas as pd
 import google.generativeai as genai
 import re
 import openpyxl
-import csv
 from PIL import Image
 import requests
 import PyPDF2 
@@ -406,11 +405,8 @@ if prompt:
         file_extension = file_name.split('.')[-1].lower()
 
         if file_extension == 'csv':
-            content = csvexcelattachment.read().decode("ISO-8859-1")
-            csvfile = StringIO(content)
-            reader = csv.reader(csvfile)
-            for row in reader:
-                    txt += " ".join(row)
+             df = pd.read_csv(csvexcelattachment)
+             txt += '   Dataframe: \n' + str(df)
         elif file_extension in ['xlsx', 'xls']:
             wb = openpyxl.load_workbook(csvexcelattachment)
             sheet = wb.active
