@@ -164,7 +164,7 @@ def extract_text_from_website(url):
         tables = soup.find_all("table")
         table_text = "\n\n".join([pd.read_html(str(table))[0].to_string(index=False) for table in tables])
 
-        # Extract text from images
+        # Extract text from images using Tesseract OCR
         images = soup.find_all("img")
         image_text = ""
         for image in images:
@@ -177,6 +177,7 @@ def extract_text_from_website(url):
         return f"{text_content}\n\nTable Text:\n{table_text}\n{image_text}"
     except Exception as e:
         return f"Error: {e}"
+
 
 
 
