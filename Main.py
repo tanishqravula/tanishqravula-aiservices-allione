@@ -41,7 +41,7 @@ st.markdown('''Powered by Tanishq ''', unsafe_allow_html=True)
 
 image = Image.open("DALL·E 2024-01-15 00.41.44 - A cartoon image of a software developer surrounded by various AI tools. The character is whimsical and colorful, with exaggerated features typical of .png")
 
-st.image(image, caption='ACCESS MY AI SERVICES', use_column_width=True)
+st.image(image, caption='ACCESS MY AI PRODUCTS', use_column_width=True)
 st.caption("By Tanishq Ravula")
 
 #------------------------------------------------------------
