@@ -20,7 +20,7 @@ import speech_recognition as sr
 from io import StringIO
 from io import BytesIO
 import html2text
-#import docx
+import docx
 #import doc2txt
 
 #Je t'aime plus que les mots,
