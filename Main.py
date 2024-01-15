@@ -19,6 +19,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import speech_recognition as sr
 from io import StringIO
 from io import BytesIO
+import html2text
 
 #Je t'aime plus que les mots,
 #Plus que les sentiments,
@@ -153,6 +154,19 @@ def extract_text_from_ppt(ppt_path):
                 text_content += f"Text from Image {shape_number + 1}:\n{image_text}\n"
 
     return text_content
+def extract_text_from_website(url):
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        text_content = soup.get_text()
+
+        # Extract text from tables
+        tables = soup.find_all("table")
+        table_text = "\n\n".join([pd.read_html(str(table))[0].to_string(index=False) for table in tables])
+        
+        return f"{text_content}\n\nTable Text:\n{table_text}"
+    except Exception as e:
+        return f"Error: {e}"
 
 
 
@@ -346,6 +360,7 @@ if website_chat:
             soup = BeautifulSoup(website_html, 'html.parser')
             paragraphs = soup.find_all('p')
             website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
+            website_text+=extract_text_from_website(website_url)
             content=f'display this content:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
