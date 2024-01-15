@@ -123,9 +123,10 @@ def transcribe_video(video_url):
 
     return recognizer.recognize_google(audio)
 def extract_text_from_docx(docx_file):
-    # Extract text from paragraphs and tables
     doc = docx.Document(docx_file)
     text = ""
+
+    # Extract text from paragraphs and tables
     for paragraph in doc.paragraphs:
         text += paragraph.text + "\n"
 
@@ -134,6 +135,24 @@ def extract_text_from_docx(docx_file):
             for cell in row.cells:
                 text += cell.text + "\t"
             text += "\n"
+
+    # Extract text from images using pytesseract
+    pptx_file = docx_file.replace(".docx", ".pptx")
+    doc.save(pptx_file)
+
+    ppt = Presentation(pptx_file)
+    for slide in ppt.slides:
+        for shape in slide.shapes:
+            if shape.has_text_frame:
+                text += shape.text + "\n"
+            elif shape.has_image:
+                # Extract text from images using pytesseract
+                image = shape.image
+                image_bytes = BytesIO(image.blob)
+                image_pil = Image.open(image_bytes)
+                image_text = pytesseract.image_to_string(image_pil)
+                text += image_text + "\n"
+
     return text
 def extract_text_from_image(image_bytes):
     image = Image.open(BytesIO(image_bytes))
