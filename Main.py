@@ -424,6 +424,9 @@ if prompt:
                     doc_content+=text_data_f
             elif file_extension == 'docx':
                 docx_content = extract_text_from_docx(docattachment)
+                texts, nbPages = images_to_txt(path, 'eng')
+                text_data_f = "\n\n".join(texts)
+                docx_content+=text_data_f
             elif file_extension == 'ppt' or file_extension == 'pptx':
                 ppt_content =  extract_text_from_ppt(docattachment)
             else:
