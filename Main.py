@@ -167,12 +167,12 @@ def extract_text_from_website(url):
         # Extract text from images using Tesseract OCR
         images = soup.find_all("img")
         image_text = ""
-        for image in images:
+        for idx, image in enumerate(images):
             img_url = image['src']
             img_response = requests.get(img_url, stream=True)
             img = Image.open(img_response.raw)
             img_text = pytesseract.image_to_string(img)
-            image_text += f"Image Text:\n{img_text}\n\n"
+            image_text += f"Image {idx + 1} Text:\n{img_text}\n\n"
 
         return f"{text_content}\n\nTable Text:\n{table_text}\n{image_text}"
     except Exception as e:
