@@ -20,8 +20,8 @@ import speech_recognition as sr
 from io import StringIO
 from io import BytesIO
 import html2text
-import docx
-import doc2txt
+#import docx
+#import doc2txt
 
 #Je t'aime plus que les mots,
 #Plus que les sentiments,
@@ -134,11 +134,6 @@ def extract_text_from_docx(docx_file):
             for cell in row.cells:
                 text += cell.text + "\t"
             text += "\n"
-
-    # Extract text from images using docx2txt
-    image_text = docx2txt.process(docx_file)
-    text += image_text
-
     return text
 def extract_text_from_image(image_bytes):
     image = Image.open(BytesIO(image_bytes))
