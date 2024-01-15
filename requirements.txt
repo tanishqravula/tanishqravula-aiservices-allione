@@ -14,3 +14,4 @@ openpyxl
 pdfminer==20191125
 pdf2image
 pytesseract
+html2text
