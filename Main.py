@@ -163,8 +163,18 @@ def extract_text_from_website(url):
         # Extract text from tables
         tables = soup.find_all("table")
         table_text = "\n\n".join([pd.read_html(str(table))[0].to_string(index=False) for table in tables])
-        
-        return f"{text_content}\n\nTable Text:\n{table_text}"
+
+        # Extract text from images
+        images = soup.find_all("img")
+        image_text = ""
+        for image in images:
+            img_url = image['src']
+            img_response = requests.get(img_url, stream=True)
+            img = Image.open(img_response.raw)
+            img_text = pytesseract.image_to_string(img)
+            image_text += f"Image Text:\n{img_text}\n\n"
+
+        return f"{text_content}\n\nTable Text:\n{table_text}\n{image_text}"
     except Exception as e:
         return f"Error: {e}"
 
