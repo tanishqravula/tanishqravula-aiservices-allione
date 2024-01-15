@@ -294,7 +294,7 @@ with cols[6]:
         youtube_chat = st.toggle("Chatear con youtube urls", value=False,
                                  help="Activa este modo para chatear con un sitio yotube resumir su contenido")
     else:
-        youtube_chat = st.toggle("Chat with youtube urls(Only English videos are allowed)", value=False,
+        youtube_chat = st.toggle("Chat with youtube urls", value=False,
                                  help="Activate this mode to chat with a website and summarize its content")
 
 
