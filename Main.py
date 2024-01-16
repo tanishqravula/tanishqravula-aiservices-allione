@@ -477,8 +477,9 @@ if prompt:
                         txt += str(cell.value)
             else:
                 st.error("Unsupported file type. Please upload a CSV or Excel file.")
-         except Exception as e:
-             st.error(f"Error processing file: {e}")
+        except Exception as e:
+            
+            st.error(f"Error processing file: {e}")
     if website_chat:
         txt=website_text
         prmt  = {'role': 'user', 'parts':[prompt+txt]}
