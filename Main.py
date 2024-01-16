@@ -462,24 +462,17 @@ if prompt:
 
 
     if csvexcelattachment:
-        file_name = csvexcelattachment.name
-        file_extension = file_name.split('.')[-1].lower()
         try:
-            if file_extension == 'csv': 
-                df = pd.read_csv(csvexcelattachment)
-                txt += '   Dataframe: \n' + str(df)
-            elif file_extension in ['xlsx', 'xls']:
-                wb = openpyxl.load_workbook(csvexcelattachment)
-                sheet = wb.active
-                for row in sheet.iter_rows():
-            # extract each cell value
-                    for cell in row:
-                        txt += str(cell.value)
-            else:
-                st.error("Unsupported file type. Please upload a CSV or Excel file.")
-        except Exception as e:
-            
-            st.error(f"Error processing file: {e}")
+            df = pd.read_csv(csvexcelattachment)
+            txt += '   Dataframe: \n' + str(df)
+        except:
+            wb = openpyxl.load_workbook(csvexcelattachment)
+            sheet = wb.active
+            for row in sheet.iter_rows():
+   # extract each cell value  
+                for cell in row: 
+                    txt += str(cell.value)
+
     if website_chat:
         txt=website_text
         prmt  = {'role': 'user', 'parts':[prompt+txt]}
