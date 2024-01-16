@@ -516,31 +516,29 @@ if prompt:
     else:
       spinertxt = 'Wait a moment, I am thinking...'
     with st.spinner(spinertxt):
+        if len(prmt['parts']) > 1:
+            response = vision.generate_content(prmt['parts'],stream=True,safety_settings=[
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+    ]
+)
+            response.resolve()
+        else:
+            response = st.session_state.chat.send_message(prmt['parts'][0])
+
         try:
-            if len(prmt['parts']) > 1:
-                response = vision.generate_content(
-                prmt['parts'],
-                stream=True,
-                safety_settings=[
-                    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_LOW_AND_ABOVE"},
-                    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_LOW_AND_ABOVE"},
-                ]
-               )
-                response.resolve()
-            else:
-                response = st.session_state.chat.send_message(prmt['parts'][0])
-
-            append_message({'role': 'model', 'parts': response.text})
-
-        except google.api_core.exceptions.InternalServerError as e:
-            st.error(f"An error occurred while processing your request: {e}")
-
+          append_message({'role': 'model', 'parts':response.text})
         except Exception as e:
-            st.error(f"An unexpected error occurred: {e}")
+          append_message({'role': 'model', 'parts':f'{type(e).name}: {e}'})
+
 
         st.rerun()
-
-
 
 
 
