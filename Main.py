@@ -26,7 +26,7 @@ import docx
 #Je t'aime plus que les mots,
 #Plus que les sentiments,
 #Plus que la vie elle-même
-GOOGLE_API_KEY='AIzaSyAypkH1Z-to8UaVJS4nD4vELd-g0eHuruA'
+GOOGLE_API_KEY='AIzaSyAHoNfvJhI4SwWqC75VfLS33mueiK23g2w'
 
 st.set_page_config(
     page_title="Tanishq AI Chat",
