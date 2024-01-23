@@ -370,7 +370,7 @@ if website_chat:
             paragraphs = soup.find_all('p')
             website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
             website_text+=extract_text_from_website(website_url)
-            content=f'summarise this content briefly:{website_text}'
+            content=f'summarise this content briefly:{website_text} covering all the text content of {website_text}'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
             result1=generate_content("gemini-pro",content1)
