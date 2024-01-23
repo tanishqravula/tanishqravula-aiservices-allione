@@ -178,15 +178,13 @@ def extract_text_from_website(url):
             img_url = image['src']
             img_response = requests.get(img_url, stream=True)
             img_response.raise_for_status()  # Raise HTTPError for bad image requests
-            img = Image.open(img_response.raw)
+            img = Image.open(BytesIO(img_response.content))
             img_text = pytesseract.image_to_string(img)
             image_text += f"Image {idx + 1} Text:\n{img_text}\n\n"
 
         return f"{text_content}\n\nTable Text:\n{table_text}\n{image_text}"
     except Exception as e:
         return f"Error: {e}"
-
-
 
 
 
