@@ -417,7 +417,7 @@ if website_chat:
         website_url = st.text_input("Enter the URL of the website:")
 
     if website_url:
-        try:
+        if website_url:
             #website_response = requests.get(website_url)
             #website_html = website_response.text
 
@@ -447,9 +447,9 @@ if website_chat:
 
 
 
-        except Exception as e:
+        else:
             with st.chat_message('model'):
-                st.write(f"The website  does not allow to collect and fetch information according to the websites privacy and confidential information.You can try another website urls {str(e)}")
+                st.write(f"The website  does not allow to collect and fetch information according to the websites privacy and confidential information.You can try another website urls ")
 if lang == 'Español':
   prompt = st.chat_input("Escribe tu mensaje")
 else:
