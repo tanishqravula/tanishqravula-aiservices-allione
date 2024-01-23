@@ -186,6 +186,14 @@ def extract_text_from_website(url):
     except Exception as e:
         return f"Error: {e}"
 
+def extract_text_from_image(image_path):
+    try:
+        img = Image.open(image_path)
+        text = pytesseract.image_to_string(img)
+        return text
+    except Exception as e:
+        st.warning(f"")
+        return ""
 def extract_content_with_selenium(url):
     try:
         # Configure Chrome options for running in headless mode
@@ -228,7 +236,7 @@ def extract_content_with_selenium(url):
         for image in images:
             if 'src' in image.attrs:
                 image_url = image['src']
-                image_text = extract_text_from_website(image_url)
+                image_text = extract_text_from_image(image_url)
                 image_texts += f"Text from Image: {image_text}\n"
 
         # Close the browser
@@ -236,7 +244,9 @@ def extract_content_with_selenium(url):
 
         return text_content, table_content, image_texts
     except Exception as e:
-        return f"Error extracting content from the website with Selenium: {e}"
+        st.error(f"")
+        return "", "", ""
+
 
 
 
