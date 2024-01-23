@@ -21,6 +21,8 @@ from io import StringIO
 from io import BytesIO
 import html2text
 import docx
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 #import doc2txt
 
 #Je t'aime plus que les mots,
@@ -162,15 +164,21 @@ def extract_text_from_ppt(ppt_path):
     return text_content
 def extract_text_from_website(url):
     try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise HTTPError for bad requests
-        soup = BeautifulSoup(response.text, 'html.parser')
+        # Use Selenium to load dynamic content
+        options = Options()
+        options.add_argument('--headless')  # Run Chrome in headless mode
+        driver = webdriver.Chrome(options=options)
+        driver.get(url)
+        dynamic_content = driver.page_source
+        driver.quit()
+
+        # Parse the HTML using BeautifulSoup
+        soup = BeautifulSoup(dynamic_content, 'html.parser')
         text_content = soup.get_text()
 
         # Extract text from tables
         tables = soup.find_all("table")
         table_text = "\n\n".join([pd.read_html(str(table))[0].to_string(index=False) for table in tables])
-
 
         return f"{text_content}\n\nTable Text:\n{table_text}\n"
     except Exception as e:
