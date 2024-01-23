@@ -224,9 +224,10 @@ def extract_content_with_selenium(url):
 
      
         # Close the browser
-        driver.quit()
+        #driver.quit()
 
-        return text_content, table_content
+        st.write(text_content) 
+        st.write(table_content)
     except Exception as e:
         st.error(f"")
         return "", "", ""
@@ -417,9 +418,8 @@ if website_chat:
         website_url = st.text_input("Enter the URL of the website:")
 
     if website_url:
-        text_content, table_content=extract_content_with_selenium(website_url)
-        #website_text=''
-        website_text = f"{text_content}\n\nTable Content:\n{table_content}\n\n"
+        
+        website_text=extract_content_with_selenium(website_url)
         content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
         content1=f'organize the content: {website_text} into  tables '
         result = generate_content("gemini-pro", content)
