@@ -21,6 +21,8 @@ from io import StringIO
 from io import BytesIO
 import html2text
 import docx
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 #import doc2txt
 
 #Je t'aime plus que les mots,
@@ -163,7 +165,6 @@ def extract_text_from_ppt(ppt_path):
 def extract_text_from_website(url):
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Raise HTTPError for bad requests
         soup = BeautifulSoup(response.text, 'html.parser')
         text_content = soup.get_text()
 
@@ -171,10 +172,66 @@ def extract_text_from_website(url):
         tables = soup.find_all("table")
         table_text = "\n\n".join([pd.read_html(str(table))[0].to_string(index=False) for table in tables])
 
+        # Extract text from images using Tesseract OCR
+        images = soup.find_all("img")
+        image_text = ""
+        for idx, image in enumerate(images):
+            img_url = image['src']
+            img_response = requests.get(img_url, stream=True)
+            img = Image.open(img_response.raw)
+            img_text = pytesseract.image_to_string(img)
+            image_text += f"Image {idx + 1} Text:\n{img_text}\n\n"
 
-        return f"{text_content}\n\nTable Text:\n{table_text}\n"
+        return f"{text_content}\n\nTable Text:\n{table_text}\n{image_text}"
     except Exception as e:
         return f"Error: {e}"
+
+def extract_content_with_selenium(url):
+    try:
+        # Configure Chrome options for running in headless mode
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+
+        # Initialize ChromeDriver
+        driver = webdriver.Chrome(options=chrome_options)
+
+        # Navigate to the website
+        driver.get(url)
+
+        # Wait for dynamic content to load (you may need to adjust the wait time)
+        driver.implicitly_wait(5)
+
+        # Get the HTML content after the JavaScript has executed
+        html = driver.page_source
+
+        # Parse HTML content using BeautifulSoup
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Extract text content
+        text_content = soup.get_text(separator='\n')
+
+        # Extract table content
+        tables = soup.find_all('table')
+        table_content = ""
+        for table in tables:
+            rows = table.find_all('tr')
+            for row in rows:
+                cols = row.find_all(['th', 'td'])
+                row_text = '\t'.join([col.get_text() for col in cols])
+                table_content += row_text + '\n'
+
+     
+        # Close the browser
+        driver.quit()
+
+        return text_content, table_content
+    except Exception as e:
+        st.error(f"")
+        return "", "", ""
+
+
 
 
 
@@ -361,14 +418,16 @@ if website_chat:
 
     if website_url:
         try:
-            website_response = requests.get(website_url)
-            website_html = website_response.text
+            #website_response = requests.get(website_url)
+            #website_html = website_response.text
 
-             #Use Beautiful Soup to extract and summarize text content
-            soup = BeautifulSoup(website_html, 'html.parser')
-            paragraphs = soup.find_all('p')
-            website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
-            website_text+=extract_text_from_website(website_url)
+            # Use Beautiful Soup to extract and summarize text content
+            #soup = BeautifulSoup(website_html, 'html.parser')
+           # paragraphs = soup.find_all('p')
+            #website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
+            text_content, table_contents =extract_content_with_selenium(website_url)
+            #website_text=''
+            website_text = f"{text_content}\n\nTable Content:\n{table_content}\n\n"
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
