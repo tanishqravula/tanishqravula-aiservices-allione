@@ -434,14 +434,14 @@ if website_chat:
 
     if website_url:
         try:
-            website_response = requests.get(website_url)
-            website_html = website_response.text
+            #website_response = requests.get(website_url)
+            #website_html = website_response.text
 
             # Use Beautiful Soup to extract and summarize text content
-            soup = BeautifulSoup(website_html, 'html.parser')
-            paragraphs = soup.find_all('p')
-            website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
-            website_text+=extract_content_with_selenium(website_url)
+            #soup = BeautifulSoup(website_html, 'html.parser')
+           # paragraphs = soup.find_all('p')
+            #website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
+            website_text=extract_content_with_selenium(website_url)
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
