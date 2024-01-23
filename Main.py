@@ -21,8 +21,6 @@ from io import StringIO
 from io import BytesIO
 import html2text
 import docx
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 #import doc2txt
 
 #Je t'aime plus que les mots,
@@ -164,22 +162,15 @@ def extract_text_from_ppt(ppt_path):
     return text_content
 def extract_text_from_website(url):
     try:
-        # Use Selenium to load dynamic content
-        options = Options()
-        options.add_argument('--headless')  # Run Chrome in headless mode
-        options.add_argument('--no-sandbox')  # Add no-sandbox option
-        driver = webdriver.Chrome(options=options)
-        driver.get(url)
-        dynamic_content = driver.page_source
-        driver.quit()
-
-        # Parse the HTML using BeautifulSoup
-        soup = BeautifulSoup(dynamic_content, 'html.parser')
+        response = requests.get(url)
+        response.raise_for_status()  # Raise HTTPError for bad requests
+        soup = BeautifulSoup(response.text, 'html.parser')
         text_content = soup.get_text()
 
         # Extract text from tables
         tables = soup.find_all("table")
         table_text = "\n\n".join([pd.read_html(str(table))[0].to_string(index=False) for table in tables])
+
 
         return f"{text_content}\n\nTable Text:\n{table_text}\n"
     except Exception as e:
@@ -370,14 +361,14 @@ if website_chat:
 
     if website_url:
         try:
-            #website_response = requests.get(website_url)
-            #website_html = website_response.text
+            website_response = requests.get(website_url)
+            website_html = website_response.text
 
              #Use Beautiful Soup to extract and summarize text content
-            #soup = BeautifulSoup(website_html, 'html.parser')
-            #paragraphs = soup.find_all('p')
-            #website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
-            website_text=extract_text_from_website(website_url)
+            soup = BeautifulSoup(website_html, 'html.parser')
+            paragraphs = soup.find_all('p')
+            website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
+            website_text+=extract_text_from_website(website_url)
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
