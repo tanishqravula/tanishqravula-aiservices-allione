@@ -417,39 +417,31 @@ if website_chat:
         website_url = st.text_input("Enter the URL of the website:")
 
     if website_url:
-        if website_url:
-            #website_response = requests.get(website_url)
-            #website_html = website_response.text
-
-            # Use Beautiful Soup to extract and summarize text content
-            #soup = BeautifulSoup(website_html, 'html.parser')
-           # paragraphs = soup.find_all('p')
-            #website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
-            text_content, table_content =extract_content_with_selenium(website_url)
-            #website_text=''
-            website_text = f"{text_content}\n\nTable Content:\n{table_content}\n\n"
-            content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
-            content1=f'organize the content: {website_text} into  tables '
-            result = generate_content("gemini-pro", content)
-            result1=generate_content("gemini-pro",content1)
+        text_content, table_content =extract_content_with_selenium(website_url)
+        #website_text=''
+        website_text = f"{text_content}\n\nTable Content:\n{table_content}\n\n"
+        content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
+        content1=f'organize the content: {website_text} into  tables '
+        result = generate_content("gemini-pro", content)
+        result1=generate_content("gemini-pro",content1)
 
 
             # Summarize the text if needed
             # (You can use a summarization library or method here)
 
             # Display the summarized text in the chat
-            with st.chat_message('user'):
-                st.write(f"Content: {website_url}")
-            with st.chat_message('model'):
-                st.markdown(to_markdown(result))
-                st.markdown(to_markdown(result1))
-                st.write(f'Extracted content from website:{website_text}')
+        with st.chat_message('user'):
+            st.write(f"Content: {website_url}")
+        with st.chat_message('model'):
+            st.markdown(to_markdown(result))
+            st.markdown(to_markdown(result1))
+            st.write(f'Extracted content from website:{website_text}')
 
 
 
-        else:
-            with st.chat_message('model'):
-                st.write(f"The website  does not allow to collect and fetch information according to the websites privacy and confidential information.You can try another website urls ")
+    else:
+        with st.chat_message('model'):
+            st.write(f"The website  does not allow to collect and fetch information according to the websites privacy and confidential information.You can try another website urls ")
 if lang == 'Español':
   prompt = st.chat_input("Escribe tu mensaje")
 else:
