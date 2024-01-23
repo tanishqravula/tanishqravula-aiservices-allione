@@ -425,7 +425,7 @@ if website_chat:
             #soup = BeautifulSoup(website_html, 'html.parser')
            # paragraphs = soup.find_all('p')
             #website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
-            text_content, table_contents =extract_content_with_selenium(website_url)
+            text_content, table_content =extract_content_with_selenium(website_url)
             #website_text=''
             website_text = f"{text_content}\n\nTable Content:\n{table_content}\n\n"
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
