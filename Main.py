@@ -163,6 +163,7 @@ def extract_text_from_ppt(ppt_path):
 def extract_text_from_website(url):
     try:
         response = requests.get(url)
+        response.raise_for_status()  # Raise HTTPError for bad requests
         soup = BeautifulSoup(response.text, 'html.parser')
         text_content = soup.get_text()
 
@@ -171,8 +172,17 @@ def extract_text_from_website(url):
         table_text = "\n\n".join([pd.read_html(str(table))[0].to_string(index=False) for table in tables])
 
         # Extract text from images using Tesseract OCR
+        images = soup.find_all("img")
+        image_text = ""
+        for idx, image in enumerate(images):
+            img_url = image['src']
+            img_response = requests.get(img_url, stream=True)
+            img_response.raise_for_status()  # Raise HTTPError for bad image requests
+            img = Image.open(img_response.raw)
+            img_text = pytesseract.image_to_string(img)
+            image_text += f"Image {idx + 1} Text:\n{img_text}\n\n"
 
-        return f"{text_content}\n\nTable Text:\n{table_text}\n"
+        return f"{text_content}\n\nTable Text:\n{table_text}\n{image_text}"
     except Exception as e:
         return f"Error: {e}"
 
@@ -370,7 +380,7 @@ if website_chat:
             paragraphs = soup.find_all('p')
             website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
             website_text+=extract_text_from_website(website_url)
-            content=f'summarise this content briefly:{website_text} covering all the text content of {website_text}'
+            content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
             result1=generate_content("gemini-pro",content1)
