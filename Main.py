@@ -441,7 +441,9 @@ if website_chat:
             #soup = BeautifulSoup(website_html, 'html.parser')
            # paragraphs = soup.find_all('p')
             #website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
-            website_text=extract_content_with_selenium(website_url)
+            text_content, table_content, image_texts =extract_content_with_selenium(website_url)
+            website_text=''
+            website_text+=text_content+table_content+image_texts
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
