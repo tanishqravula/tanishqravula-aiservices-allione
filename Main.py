@@ -175,6 +175,24 @@ def extract_text_from_website(url):
         return f"{text_content}\n\nTable Text:\n{table_text}\n"
     except Exception as e:
         return f"Error: {e}"
+def extract_text_from_images_on_website(images):
+    extracted_text = ""
+    for image in images:
+        try:
+            # Convert the image to an array
+            image_np = np.array(image)
+
+            # Convert RGB to BGR (OpenCV uses BGR format)
+            image_cv2 = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
+
+            # Use Tesseract to extract text
+            text = pytesseract.image_to_string(image_cv2, lang='eng')
+            extracted_text += f"Text from Image: {text}\n"
+
+        except Exception as e:
+            extracted_text += f"Error extracting text from image: {str(e)}\n"
+
+    return extracted_text
 
 
 
@@ -369,6 +387,9 @@ if website_chat:
             paragraphs = soup.find_all('p')
             website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
             website_text+=extract_text_from_website(website_url)
+            images = [Image.open(requests.get(img['src'], stream=True).raw) for img in soup.find_all('img')]
+            image_text = extract_text_from_images_on_website(images)
+            website_text+=image_text
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
