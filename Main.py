@@ -387,9 +387,9 @@ if website_chat:
             paragraphs = soup.find_all('p')
             website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
             website_text+=extract_text_from_website(website_url)
-            images = [Image.open(requests.get(img['src'], stream=True).raw) for img in soup.find_all('img')]
-            image_text = extract_text_from_images_on_website(images)
-            website_text+=image_text
+            #images = [Image.open(requests.get(img['src'], stream=True).raw) for img in soup.find_all('img')]
+            #image_text = extract_text_from_images_on_website(images)
+            #website_text+=image_text
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
