@@ -21,6 +21,8 @@ from io import StringIO
 from io import BytesIO
 import html2text
 import docx
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 #import doc2txt
 
 #Je t'aime plus que les mots,
@@ -162,19 +164,50 @@ def extract_text_from_ppt(ppt_path):
     return text_content
 def extract_text_from_website(url):
     try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise HTTPError for bad requests
-        soup = BeautifulSoup(response.text, 'html.parser')
-        text_content = soup.get_text()
+        # Configure Chrome options for running in headless mode
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
 
-        # Extract text from tables
-        tables = soup.find_all("table")
-        table_text = "\n\n".join([pd.read_html(str(table))[0].to_string(index=False) for table in tables])
+        # Initialize ChromeDriver
+        driver = webdriver.Chrome(options=chrome_options)
 
+        # Navigate to the website
+        driver.get(url)
 
-        return f"{text_content}\n\nTable Text:\n{table_text}\n"
+        # Wait for dynamic content to load (you may need to adjust the wait time)
+        driver.implicitly_wait(5)
+
+        # Get the HTML content after the JavaScript has executed
+        html = driver.page_source
+
+        # Parse HTML content using BeautifulSoup
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Extract text content
+        text_content = soup.get_text(separator='\n')
+
+        # Extract table content
+        tables = soup.find_all('table')
+        table_content = ""
+        for table in tables:
+            rows = table.find_all('tr')
+            for row in rows:
+                cols = row.find_all(['th', 'td'])
+                row_text = '\t'.join([col.get_text() for col in cols])
+                table_content += row_text + '\n'
+
+       
+
+        # Close the browser
+        driver.quit()
+
+        return text_content, table_content
     except Exception as e:
-        return f"Error: {e}"
+        st.error(f"Error extracting content from the website with Selenium: {e}")
+        return "", "", ""
+
 def extract_text_from_images_on_website(images):
     extracted_text = ""
     for image in images:
