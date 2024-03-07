@@ -11,19 +11,21 @@ import pdf2image
 import pytesseract
 from pytesseract import Output, TesseractError
 
-@st.cache_data()
+@st.cache_data
 def images_to_txt(path, language):
-    images = pdf2image.convert_from_path(path)
-
+    images = pdf2image.convert_from_bytes(path)
     all_text = []
-    for i, image in enumerate(images):
-        text = pytesseract.image_to_string(image, lang=language)
+    for i in images:
+        pil_im = i
+        text = pytesseract.image_to_string(pil_im, lang=language)
+        # ocr_dict = pytesseract.image_to_data(pil_im, lang='eng', output_type=Output.DICT)
+        # ocr_dict now holds all the OCR info including text and location on the image
+        # text = " ".join(ocr_dict['text'])
+        # text = re.sub('[ ]{2,}', '\n', text)
         all_text.append(text)
+    return all_text, len(all_text)
 
-    return all_text, len(images)
-
-
-@st.cache_data()
+@st.cache_data
 def convert_pdf_to_txt_pages(path):
     texts = []
     rsrcmgr = PDFResourceManager()
@@ -52,27 +54,29 @@ def convert_pdf_to_txt_pages(path):
     retstr.close()
     return texts, nbPages
 
-@st.cache_data()
+@st.cache_data
 def convert_pdf_to_txt_file(path):
+    texts = []
     rsrcmgr = PDFResourceManager()
-    laparams = LAParams()
     retstr = StringIO()
+    laparams = LAParams()
     device = TextConverter(rsrcmgr, retstr, laparams=laparams)
+    # fp = open(path, 'rb')
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+    
+    file_pages = PDFPage.get_pages(path)
+    nbPages = len(list(file_pages))
+    for page in PDFPage.get_pages(path):
+      interpreter.process_page(page)
+      t = retstr.getvalue()
+    # text = retstr.getvalue()
 
-    with open(path, 'rb') as fp:
-        interpreter = PDFPageInterpreter(rsrcmgr, device)
-        for page in PDFPage.get_pages(fp):
-            interpreter.process_page(page)
-            # Yield text in chunks to avoid loading entire file into memory
-            yield retstr.getvalue()
-            retstr.truncate(0)
-            retstr.seek(0)
-
+    # fp.close()
     device.close()
     retstr.close()
+    return t, nbPages
 
-
-@st.cache_data()
+@st.cache_data
 def save_pages(pages):
   
   files = []
