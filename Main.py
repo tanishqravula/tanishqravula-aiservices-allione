@@ -5,7 +5,6 @@ import re
 import openpyxl
 from PIL import Image
 import pdf2image
-from pdf2image import convert_from_path
 import pytesseract
 from pytesseract import Output, TesseractError
 from functions import convert_pdf_to_txt_pages, convert_pdf_to_txt_file, save_pages, displayPDF, images_to_txt
@@ -22,8 +21,6 @@ from io import StringIO
 from io import BytesIO
 import html2text
 import docx
-import cv2
-import numpy as np
 #import doc2txt
 
 #Je t'aime plus que les mots,
@@ -141,7 +138,8 @@ def extract_text_from_docx(docx_file):
 
 
     return text
-def extract_text_from_image(image):
+def extract_text_from_image(image_bytes):
+    image = Image.open(BytesIO(image_bytes))
     text = pytesseract.image_to_string(image)
     return text
 def extract_text_from_ppt(ppt_path):
@@ -195,61 +193,6 @@ def extract_text_from_images_on_website(images):
             extracted_text += f"Error extracting text from image: {str(e)}\n"
 
     return extracted_text
-def deskew(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray = cv2.bitwise_not(gray)
-    coords = np.column_stack(np.where(gray > 0))
-    angle = cv2.minAreaRect(coords)[-1]
-    
-    if angle < -45:
-        angle = -(90 + angle)
-    else:
-        angle = -angle
-
-    (h, w) = image.shape[:2]
-    center = (w // 2, h // 2)
-    M = cv2.getRotationMatrix2D(center, angle, 1.0)
-    rotated = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
-
-    return rotated
-
-def process_page(page):
-    try:
-        # Transfer image of pdf_file into array
-        page_arr = np.array(page)
-        # Transfer into grayscale
-        page_arr_gray = cv2.cvtColor(page_arr, cv2.COLOR_BGR2GRAY)
-        # Deskew the page
-        page_deskew = deskew(page_arr_gray)
-        # Cal confidence value
-        page_conf = get_conf(page_deskew)
-        # Extract string
-        d = pytesseract.image_to_data(page_deskew, output_type=pytesseract.Output.DICT)
-        d_df = pd.DataFrame.from_dict(d)
-        # Get block number
-        block_num = int(d_df.loc[d_df['level'] == 2, 'block_num'].max())
-        # Drop header and footer by index
-        header_index = d_df[d_df['block_num'] == 1].index.values
-        footer_index = d_df[d_df['block_num'] == block_num].index.values
-        # Combine text in dataframe, excluding header and footer regions
-        text = ' '.join(d_df.loc[(d_df['level'] == 5) & (~d_df.index.isin(header_index) & ~d_df.index.isin(footer_index)), 'text'].values)
-        return  text
-    except Exception as e:
-        # If can't extract then give some notes into df
-        if hasattr(e, 'message'):
-            return  e.message
-        else:
-            return  str(e)
-def extract_text_from_pdfimage(pdf_file):
-    pages = convert_from_path(pdf_file)
-    extracted_text = []
-    for page in pages:
-        preprocessed_image = deskew(np.array(page))
-        text = extract_text_from_image(preprocessed_image)
-        extracted_text.append(text)
-        text1+= process_page(page)
-    text1+=''.join(extracted_text)
-    return text1
 
 
 
@@ -493,10 +436,10 @@ if prompt:
                     doc_content = ""
                     for page_num in range(len(reader.pages)):
                         doc_content += reader.pages[page_num].extract_text()
-                    #texts, nbPages = images_to_txt(path, 'eng')
-                    #text_data_f = "\n\n".join(texts)
+                    texts, nbPages = images_to_txt(path, 'eng')
+                    text_data_f = "\n\n".join(texts)
                     #text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
-                    doc_content+= extract_text_from_pdfimage(path)
+                    doc_content+=text_data_f
             elif file_extension == 'docx':
                 docx_content = extract_text_from_docx(docattachment)
 
