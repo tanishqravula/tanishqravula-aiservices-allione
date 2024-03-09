@@ -21,8 +21,8 @@ from io import StringIO
 from io import BytesIO
 import html2text
 import docx
-import tracemalloc
-tracemalloc.start()
+#import tracemalloc
+#tracemalloc.start()
 
 #import doc2txt
 
