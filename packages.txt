@@ -3,4 +3,3 @@ tesseract-ocr
 tesseract-ocr-spa
 tesseract-ocr-fra
 tesseract-ocr-ara
-pytesseract
