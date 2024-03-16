@@ -208,14 +208,21 @@ def extract_content_with_selenium(url):
         chrome_options.add_argument("--headless")
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--no-sandbox')
-
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-features=NetworkService")
+        chrome_options.add_argument("--window-size=1920x1080")
+        chrome_options.add_argument("--disable-features=VizDisplayCompositor")
+        chrome_options.add_argument('--ignore-certificate-errors')
+ 
 
         # Create the driver with the options
         driver = webdriver.Chrome(options=chrome_options)
 
         # Load the page with Selenium
         driver.get(url)
-        #driver.implicitly_wait(5)
 
         # Wait up to 10 seconds for the page to load
         # Wait for the page to finish loading all JavaScript
@@ -256,7 +263,6 @@ def extract_content_with_selenium(url):
     except Exception as e:
         st.error(f"Error extracting content from the website with Selenium: {e}")
         return "","",""
-
 
 
 
