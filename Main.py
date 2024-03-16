@@ -473,7 +473,7 @@ if website_chat:
             with st.chat_message('model'):
                 st.markdown(to_markdown(result))
                 st.markdown(to_markdown(result1))
-                st.write(f'Extracted content from website:{website_text}')
+                #st.write(f'Extracted content from website:{website_text}')
 
 
 
