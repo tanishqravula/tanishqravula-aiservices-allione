@@ -182,7 +182,7 @@ def extract_text_from_website(url):
 
         return f"{text_content}\n\nTable Text:\n{table_text}\n"
     except Exception as e:
-        return f"cant fetch information due to privacy issues"
+        return f"XYZ#&^^@^%@hx"
 def extract_text_from_images_on_website(images):
     extracted_text = ""
     for image in images:
@@ -225,7 +225,7 @@ def extract_content_with_selenium(url):
         html = driver.page_source
 
         # Close the WebDriver
-        #driver.quit()
+        driver.quit()
 
         # Parse HTML content using BeautifulSoup
         soup = BeautifulSoup(html, 'html.parser')
@@ -249,13 +249,12 @@ def extract_content_with_selenium(url):
                 table_content += row_text + '\n'
 
         # Close the browser
-        driver.quit()
+        #driver.quit()
 
         return text_content, table_content, para_content
     except Exception as e:
         st.error(f"Error extracting content from the website with Selenium: {e}")
         return "","",""
-
 
 
 
@@ -449,7 +448,7 @@ if website_chat:
             website_html = website_response.text
 
              #Use Beautiful Soup to extract and summarize text content
-            if(extract_text_from_website(website_url)!='cant fetch information due to privacy issues'):
+            if(extract_text_from_website(website_url)!='XYZ#&^^@^%@hx'):
                 
                 
                 soup = BeautifulSoup(website_html, 'html.parser')
