@@ -449,28 +449,12 @@ if website_chat:
         website_url = st.text_input("Enter the URL of the website:")
 
     if website_url:
-        website_text=''
         try:
-
-             #Use Beautiful Soup to extract and summarize text content
-            if(extract_text_from_website(website_url)!='XYZ#&^^@^%@hx'):
-                website_response = requests.get(website_url)
-                website_html = website_response.text
-                soup = BeautifulSoup(website_html, 'html.parser')
-                paragraphs = soup.find_all('p')
-                website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
-                website_text+=extract_text_from_website(website_url)
-            #images = [Image.open(requests.get(img['src'], stream=True).raw) for img in soup.find_all('img')]
-            #image_text = extract_text_from_images_on_website(images)
-            #website_text+=image_text
-            #website_text=''
-            else:
-                website_text=''
-                text_content, table_content,para_content = extract_content_with_selenium(website_url)
-                website_text+=text_content
-                website_text+=table_content
-                website_text+=para_content
-            
+            website_text=''
+            text_content, table_content,para_content = extract_content_with_selenium(website_url)
+            website_text+=text_content
+            website_text+=table_content
+            website_text+=para_content
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
