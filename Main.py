@@ -182,7 +182,7 @@ def extract_text_from_website(url):
 
         return f"{text_content}\n\nTable Text:\n{table_text}\n"
     except Exception as e:
-        return f"Error: {e}"
+        return f"cant fetch information due to privacy issues"
 def extract_text_from_images_on_website(images):
     extracted_text = ""
     for image in images:
@@ -205,29 +205,38 @@ def extract_content_with_selenium(url):
     try:
         # Configure Chrome options for running in headless mode
         chrome_options = Options()
-        chrome_options.add_argument('--headless')
+        chrome_options.add_argument("--headless")
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--no-sandbox')
 
-        # Initialize ChromeDriver
+
+        # Create the driver with the options
         driver = webdriver.Chrome(options=chrome_options)
 
-        # Navigate to the website
+        # Load the page with Selenium
         driver.get(url)
 
-        # Wait for dynamic content to load (you may need to adjust the wait time)
-        driver.implicitly_wait(5)
+        # Wait up to 10 seconds for the page to load
+        # Wait for the page to finish loading all JavaScript
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.presence_of_element_located((By.XPATH, "//body[not(@class='loading')]")))
 
-        # Get the HTML content after the JavaScript has executed
+        # Get the HTML of the page
         html = driver.page_source
+
+        # Close the WebDriver
+        #driver.quit()
 
         # Parse HTML content using BeautifulSoup
         soup = BeautifulSoup(html, 'html.parser')
 
-        # Extract text content
-        text_content = soup.get_text(separator='\n')
+        # Extract desired content here
+        # For example, let's extract all text from paragraphs
         paragraphs = soup.find_all('p')
-        para_content = '\n'.join([p.get_text() for p in paragraphs])
+        text_content = '\n'.join([p.get_text() for p in paragraphs])
+        para_content = soup.get_text(separator='\n')
+        #text_content1=soup.get_text(separator='\n')
+
 
         # Extract table content
         tables = soup.find_all('table')
@@ -242,10 +251,12 @@ def extract_content_with_selenium(url):
         # Close the browser
         driver.quit()
 
-        return text_content, table_content,para_content
+        return text_content, table_content, para_content
     except Exception as e:
         st.error(f"Error extracting content from the website with Selenium: {e}")
-        return "", "",""
+        return "","",""
+
+
 
 
 
@@ -432,23 +443,29 @@ if website_chat:
         website_url = st.text_input("Enter the URL of the website:")
 
     if website_url:
+        website_text=''
         try:
             website_response = requests.get(website_url)
             website_html = website_response.text
 
              #Use Beautiful Soup to extract and summarize text content
-            soup = BeautifulSoup(website_html, 'html.parser')
-            paragraphs = soup.find_all('p')
-            website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
-            website_text+=extract_text_from_website(website_url)
+            if(extract_text_from_website(website_url)!='cant fetch information due to privacy issues'):
+                
+                
+                soup = BeautifulSoup(website_html, 'html.parser')
+                paragraphs = soup.find_all('p')
+                website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
+                website_text+=extract_text_from_website(website_url)
             #images = [Image.open(requests.get(img['src'], stream=True).raw) for img in soup.find_all('img')]
             #image_text = extract_text_from_images_on_website(images)
             #website_text+=image_text
             #website_text=''
-            #text_content, table_content,para_content = extract_content_with_selenium(website_url)
-            #website_text+=text_content
-            #website_text+=table_content
-            #website_text+=para_content
+            else:
+                website_text=''
+                text_content, table_content,para_content = extract_content_with_selenium(website_url)
+                website_text+=text_content
+                website_text+=table_content
+                website_text+=para_content
             
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
