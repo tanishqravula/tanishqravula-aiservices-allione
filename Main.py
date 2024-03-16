@@ -217,8 +217,10 @@ def extract_content_with_selenium(url):
 
         # Wait up to 10 seconds for the page to load
         # Wait for the page to finish loading all JavaScript
-        wait = WebDriverWait(driver, 10)
-        wait.until(EC.presence_of_element_located((By.XPATH, "//body[not(@class='loading')]")))
+        #wait = WebDriverWait(driver, 10)
+        #wait.until(EC.presence_of_element_located((By.XPATH, "//body[not(@class='loading')]")))
+        driver.implicitly_wait(5)
+
 
         # Get the HTML of the page
         html = driver.page_source
@@ -597,7 +599,17 @@ if prompt:
       spinertxt = 'Wait a moment, I am thinking...'
     with st.spinner(spinertxt):
         if len(prmt['parts']) > 1:
-            response = vision.generate_content(prmt['parts'],stream=True)
+            response = vision.generate_content(prmt['parts'],stream=True,safety_settings=[
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+    ]
+)
             response.resolve()
         else:
             response = st.session_state.chat.send_message(prmt['parts'][0])
