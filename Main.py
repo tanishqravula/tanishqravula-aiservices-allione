@@ -450,7 +450,7 @@ if website_chat:
             #images = [Image.open(requests.get(img['src'], stream=True).raw) for img in soup.find_all('img')]
             #image_text = extract_text_from_images_on_website(images)
             #website_text+=image_text
-            text_content, table_content = extract_content_with_selenium(url)
+            text_content, table_content = extract_content_with_selenium(website_url)
             website_text=text_content+table_content
             
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
