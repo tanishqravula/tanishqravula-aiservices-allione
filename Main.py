@@ -8,6 +8,7 @@ import pdf2image
 import pytesseract
 from pytesseract import Output, TesseractError
 from functions import convert_pdf_to_txt_pages, convert_pdf_to_txt_file, save_pages, displayPDF, images_to_txt
+from selenium.webdriver.chrome.options import Options
 import requests
 import PyPDF2 
 from docx import Document
@@ -204,40 +205,29 @@ def extract_content_with_selenium(url):
     try:
         # Configure Chrome options for running in headless mode
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        #chrome_options.add_argument('--disable-gpu')
-        #chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
 
-
-        # Create the driver with the options
+        # Initialize ChromeDriver
         driver = webdriver.Chrome(options=chrome_options)
 
-        # Load the page with Selenium
+        # Navigate to the website
         driver.get(url)
 
-        # Wait up to 10 seconds for the page to load
-        # Wait for the page to finish loading all JavaScript
-        wait = WebDriverWait(driver, 10)
-        wait.until(EC.presence_of_element_located((By.XPATH, "//body[not(@class='loading')]")))
+        # Wait for dynamic content to load (you may need to adjust the wait time)
         driver.implicitly_wait(5)
 
-
-        # Get the HTML of the page
+        # Get the HTML content after the JavaScript has executed
         html = driver.page_source
-
-        # Close the WebDriver
-        driver.quit()
 
         # Parse HTML content using BeautifulSoup
         soup = BeautifulSoup(html, 'html.parser')
 
-        # Extract desired content here
-        # For example, let's extract all text from paragraphs
+        # Extract text content
+        text_content = soup.get_text(separator='\n')
         paragraphs = soup.find_all('p')
-        text_content = '\n'.join([p.get_text() for p in paragraphs])
-        para_content = soup.get_text(separator='\n')
-        #text_content1=soup.get_text(separator='\n')
-
+        para_content = '\n'.join([p.get_text() for p in paragraphs])
 
         # Extract table content
         tables = soup.find_all('table')
@@ -250,12 +240,12 @@ def extract_content_with_selenium(url):
                 table_content += row_text + '\n'
 
         # Close the browser
-        #driver.quit()
+        driver.quit()
 
-        return text_content, table_content, para_content
+        return text_content, table_content,para_content
     except Exception as e:
         st.error(f"Error extracting content from the website with Selenium: {e}")
-        return "","",""
+        return "", "",""
 
 
 
