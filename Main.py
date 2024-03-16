@@ -476,7 +476,7 @@ if website_chat:
             #result1=generate_gemini("gemini-pro",content1)
             if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
                 result=website_text
-                result1=website_text
+                result1=''
             else:
                 result = generate_gemini("gemini-pro", content)
                 result1=generate_gemini("gemini-pro",content1)
@@ -494,6 +494,7 @@ if website_chat:
                 st.markdown(to_markdown(result))
                 st.markdown(to_markdown(result1))
                 #st.write(f'Extracted content from website:{website_text}')
+                st.write(f'Extracted content from website:{website_text}')
 
 
 
