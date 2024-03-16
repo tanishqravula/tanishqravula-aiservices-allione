@@ -253,7 +253,7 @@ def extract_content_with_selenium(url):
         return text_content, table_content, para_content
     except Exception as e:
         st.error(f"Error extracting content from the website with Selenium: {e}")
-        return "",""
+        return "","",""
 
 
 
