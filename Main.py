@@ -491,10 +491,11 @@ if website_chat:
             with st.chat_message('user'):
                 st.write(f"Content: {website_url}")
             with st.chat_message('model'):
+                st.write(f'Extracted content from website:{website_text}')
                 st.markdown(to_markdown(result))
                 st.markdown(to_markdown(result1))
                 #st.write(f'Extracted content from website:{website_text}')
-                st.write(f'Extracted content from website:{website_text}')
+                
 
 
 
