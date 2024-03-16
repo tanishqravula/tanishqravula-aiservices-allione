@@ -215,12 +215,12 @@ def extract_content_with_selenium(url):
 
         # Load the page with Selenium
         driver.get(url)
-        driver.implicitly_wait(5)
+        #driver.implicitly_wait(5)
 
         # Wait up to 10 seconds for the page to load
         # Wait for the page to finish loading all JavaScript
-        #wait = WebDriverWait(driver, 10)
-        #wait.until(EC.presence_of_element_located((By.XPATH, "//body[not(@class='loading')]")))
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.presence_of_element_located((By.XPATH, "//body[not(@class='loading')]")))
 
         # Get the HTML of the page
         html = driver.page_source
