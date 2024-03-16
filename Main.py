@@ -447,8 +447,8 @@ if website_chat:
 
              #Use Beautiful Soup to extract and summarize text content
             if(extract_text_from_website(website_url)!='XYZ#&^^@^%@hx'):
-                 website_response = requests.get(website_url)
-                 website_html = website_response.text
+                website_response = requests.get(website_url)
+                website_html = website_response.text
                 soup = BeautifulSoup(website_html, 'html.parser')
                 paragraphs = soup.find_all('p')
                 website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
