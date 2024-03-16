@@ -263,6 +263,21 @@ def extract_content_with_selenium(url):
     except Exception as e:
         st.error(f"Error extracting content from the website with Selenium: {e}")
         return "","",""
+def generate_gemini(model_type, content):
+    try:
+        #content=str(content)
+        model = load_model()  # Ensure model is loaded
+        response = model.generate_content(content)
+        if hasattr(response, 'text'):
+            return response.text
+        else:
+            # Convert the response object to string and return
+            return str(response)
+    except ValueError as e:
+        error_message = f"An error occurred while generating content: {str(e)}"
+        # Log the error message or handle it appropriately
+        print(error_message)
+        return None
 
 
 
@@ -457,8 +472,16 @@ if website_chat:
             website_text+=para_content
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
-            result = generate_content("gemini-pro", content)
-            result1=generate_content("gemini-pro",content1)
+            #result = generate_gemini("gemini-pro", content)
+            #result1=generate_gemini("gemini-pro",content1)
+            if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
+                result=website_text
+                result1=website_text
+            else:
+                result = generate_gemini("gemini-pro", content)
+                result1=generate_gemini("gemini-pro",content1)
+                
+                
 
 
             # Summarize the text if needed
