@@ -217,8 +217,8 @@ def extract_content_with_selenium(url):
 
         # Wait up to 10 seconds for the page to load
         # Wait for the page to finish loading all JavaScript
-        #wait = WebDriverWait(driver, 10)
-        #wait.until(EC.presence_of_element_located((By.XPATH, "//body[not(@class='loading')]")))
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.presence_of_element_located((By.XPATH, "//body[not(@class='loading')]")))
         driver.implicitly_wait(5)
 
 
@@ -226,7 +226,7 @@ def extract_content_with_selenium(url):
         html = driver.page_source
 
         # Close the WebDriver
-        #driver.quit()
+        driver.quit()
 
         # Parse HTML content using BeautifulSoup
         soup = BeautifulSoup(html, 'html.parser')
@@ -250,7 +250,7 @@ def extract_content_with_selenium(url):
                 table_content += row_text + '\n'
 
         # Close the browser
-        driver.quit()
+        #driver.quit()
 
         return text_content, table_content, para_content
     except Exception as e:
