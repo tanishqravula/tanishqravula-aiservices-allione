@@ -21,6 +21,12 @@ from io import StringIO
 from io import BytesIO
 import html2text
 import docx
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium import webdriver
+from bs4 import BeautifulSoup
 
 #import doc2txt
 
@@ -194,6 +200,61 @@ def extract_text_from_images_on_website(images):
             extracted_text += f"Error extracting text from image: {str(e)}\n"
 
     return extracted_text
+def extract_content_with_selenium(url):
+    try:
+        # Configure Chrome options for running in headless mode
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+
+
+        # Create the driver with the options
+        driver = webdriver.Chrome(options=chrome_options)
+
+        # Load the page with Selenium
+        driver.get(url)
+
+        # Wait up to 10 seconds for the page to load
+        # Wait for the page to finish loading all JavaScript
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.presence_of_element_located((By.XPATH, "//body[not(@class='loading')]")))
+
+        # Get the HTML of the page
+        html = driver.page_source
+
+        # Close the WebDriver
+        driver.quit()
+
+        # Parse HTML content using BeautifulSoup
+        soup = BeautifulSoup(html, 'html.parser')
+
+        # Extract desired content here
+        # For example, let's extract all text from paragraphs
+        paragraphs = soup.find_all('p')
+        text_content = '\n'.join([p.get_text() for p in paragraphs])
+        para_content = soup.get_text(separator='\n')
+        #text_content1=soup.get_text(separator='\n')
+
+
+        # Extract table content
+        tables = soup.find_all('table')
+        table_content = ""
+        for table in tables:
+            rows = table.find_all('tr')
+            for row in rows:
+                cols = row.find_all(['th', 'td'])
+                row_text = '\t'.join([col.get_text() for col in cols])
+                table_content += row_text + '\n'
+
+        # Close the browser
+        #driver.quit()
+
+        return text_content, table_content, para_content
+    except Exception as e:
+        st.error(f"Error extracting content from the website with Selenium: {e}")
+        return "",""
+
 
 
 
@@ -380,17 +441,23 @@ if website_chat:
 
     if website_url:
         try:
-            website_response = requests.get(website_url)
-            website_html = website_response.text
+            #website_response = requests.get(website_url)
+            #website_html = website_response.text
 
              #Use Beautiful Soup to extract and summarize text content
-            soup = BeautifulSoup(website_html, 'html.parser')
-            paragraphs = soup.find_all('p')
-            website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
-            website_text+=extract_text_from_website(website_url)
+            #soup = BeautifulSoup(website_html, 'html.parser')
+            #paragraphs = soup.find_all('p')
+            #website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
+            #website_text+=extract_text_from_website(website_url)
             #images = [Image.open(requests.get(img['src'], stream=True).raw) for img in soup.find_all('img')]
             #image_text = extract_text_from_images_on_website(images)
             #website_text+=image_text
+            website_text=''
+            text_content, table_content,para_content = extract_content_with_selenium(website_url)
+            website_text+=text_content
+            website_text+=table_content
+            website_text+=para_content
+            
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             result = generate_content("gemini-pro", content)
@@ -530,17 +597,7 @@ if prompt:
       spinertxt = 'Wait a moment, I am thinking...'
     with st.spinner(spinertxt):
         if len(prmt['parts']) > 1:
-            response = vision.generate_content(prmt['parts'],stream=True,safety_settings=[
-        {
-            "category": "HARM_CATEGORY_HARASSMENT",
-            "threshold": "BLOCK_LOW_AND_ABOVE",
-        },
-        {
-            "category": "HARM_CATEGORY_HATE_SPEECH",
-            "threshold": "BLOCK_LOW_AND_ABOVE",
-        },
-    ]
-)
+            response = vision.generate_content(prmt['parts'],stream=True)
             response.resolve()
         else:
             response = st.session_state.chat.send_message(prmt['parts'][0])
