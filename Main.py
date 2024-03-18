@@ -526,7 +526,8 @@ if prompt:
                     doc_content = ""
                     for page_num in range(len(doc)):
                         page = doc.load_page(page_num)
-                        doc_content += page.get_text()
+                        text = page.get_text("text")
+                        doc_content +=text
                     texts, nbPages = images_to_txt(path, 'eng')
                     text_data_f = "\n\n".join(texts)
                     #text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
