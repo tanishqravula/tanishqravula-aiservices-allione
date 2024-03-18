@@ -29,6 +29,12 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from bs4 import BeautifulSoup
+import io
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
+
 
 #import doc2txt
 
@@ -520,13 +526,18 @@ if prompt:
         file_extension = docattachment.name.split('.')[-1].lower()
         try:
             if file_extension == 'pdf':
-                
-                if docattachment is not None:
-                    doc = fitz.open(stream=path, filetype="pdf")
-                    doc_content = ""
-                    for page_num in range(len(doc)):
-                        page = doc.load_page(page_num)
-                        doc_content += page.get_text()
+                if docattachment is not None:   
+                    resource_manager = PDFResourceManager()
+                    fake_file_handle = io.StringIO()
+                    converter = TextConverter(resource_manager, fake_file_handle, laparams=LAParams())
+                    interpreter = PDFPageInterpreter(resource_manager, converter)
+                    with open(path, 'rb') as fh:
+                        for page in PDFPage.get_pages(fh, caching=True, check_extractable=True):
+                            interpreter.process_page(page)
+
+                    doc_content = fake_file_handle.getvalue()
+                    converter.close()
+                    fake_file_handle.close()
                     texts, nbPages = images_to_txt(path, 'eng')
                     text_data_f = "\n\n".join(texts)
                     #text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
