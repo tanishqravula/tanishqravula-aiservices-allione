@@ -465,24 +465,23 @@ if website_chat:
         website_url = st.text_input("Enter the URL of the website:")
 
     if website_url:
-        try:
-            website_text=''
-            text_content, table_content,para_content = extract_content_with_selenium(website_url)
-            website_text+=text_content
-            website_text+=table_content
-            website_text+=para_content
-            if(extract_text_from_website(website_url)!='XYZ#&^^@^%@hx'):
-                website_text+=extract_text_from_website(website_url)
-            content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
-            content1=f'organize the content: {website_text} into  tables '
+        website_text=''
+        text_content, table_content,para_content = extract_content_with_selenium(website_url)
+        website_text+=text_content
+        website_text+=table_content
+        website_text+=para_content
+        if(extract_text_from_website(website_url)!='XYZ#&^^@^%@hx'):
+            website_text+=extract_text_from_website(website_url)
+        content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
+        content1=f'organize the content: {website_text} into  tables '
             #result = generate_gemini("gemini-pro", content)
             #result1=generate_gemini("gemini-pro",content1)
-            if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
-                result=website_text
-                result1=''
-            else:
-                result = generate_gemini("gemini-pro", content)
-                result1=generate_gemini("gemini-pro",content1)
+        if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
+            result=website_text
+            result1=''
+        else:
+            result = generate_gemini("gemini-pro", content)
+            result1=generate_gemini("gemini-pro",content1)
                 
                 
 
@@ -491,20 +490,13 @@ if website_chat:
             # (You can use a summarization library or method here)
 
             # Display the summarized text in the chat
-            with st.chat_message('user'):
-                st.write(f"Content: {website_url}")
-            with st.chat_message('model'):
-                st.write(f'Extracted content from website:{website_text}')
-                st.markdown(to_markdown(result))
-                st.markdown(to_markdown(result1))
-                #st.write(f'Extracted content from website:{website_text}')
-                
-
-
-
-        except Exception as e:
-            with st.chat_message('model'):
-                st.write(f"The website  does not allow to collect and fetch information according to the websites privacy and confidential information.You can try another website urls {str(e)}")
+        with st.chat_message('user'):
+            st.write(f"Content: {website_url}")
+        with st.chat_message('model'):
+            st.write(f'Extracted content from website:{website_text}')
+            st.markdown(to_markdown(result))
+            st.markdown(to_markdown(result1))
+                #st.write(f'Extracted content from website:{website_text}'
 if lang == 'Español':
   prompt = st.chat_input("Escribe tu mensaje")
 else:
