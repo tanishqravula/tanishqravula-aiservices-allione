@@ -5,6 +5,12 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from io import StringIO
+from io import BytesIO
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
+
 import base64
 #------- OCR ------------
 import pdf2image
@@ -26,19 +32,23 @@ def images_to_txt(path, language):
     return all_text, len(all_text)
 
 @st.cache_data
-def convert_pdf_to_txt_pages(path):
+def remove_null_bytes(input_bytes):
+    # Remove null bytes from the input bytes
+    return input_bytes.replace(b'\x00', b'')
+
+def convert_pdf_to_txt_pages(pdf_bytes):
     texts = []
-    with open(path, 'rb') as fp:  # Open the PDF file in binary mode
+    with BytesIO(pdf_bytes) as fp:
+        sanitized_bytes = remove_null_bytes(fp.read())
         rsrcmgr = PDFResourceManager()
-        retstr = StringIO()
-        laparams = LAParams()
-        device = TextConverter(rsrcmgr, retstr, laparams=laparams)
+        retstr = BytesIO()
+        device = TextConverter(rsrcmgr, retstr, laparams=LAParams())
         interpreter = PDFPageInterpreter(rsrcmgr, device)
         size = 0
         c = 0
-        file_pages = PDFPage.get_pages(fp)
+        file_pages = PDFPage.get_pages(BytesIO(sanitized_bytes))
         nbPages = len(list(file_pages))
-        for page in PDFPage.get_pages(fp):
+        for page in PDFPage.get_pages(BytesIO(sanitized_bytes)):
             interpreter.process_page(page)
             t = retstr.getvalue()
             if c == 0:
@@ -50,7 +60,6 @@ def convert_pdf_to_txt_pages(path):
         device.close()
         retstr.close()
     return texts, nbPages
-
 @st.cache_data
 def convert_pdf_to_txt_file(path):
     texts = []
