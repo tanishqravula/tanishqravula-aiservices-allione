@@ -68,7 +68,7 @@ with langcols[0]:
 if 'lang' not in st.session_state:
     st.session_state.lang = lang
 st.divider()
-st.write('For chatting with large PDF Files containing texts use this link:https://tanishqravulachatwithpdfs-ddkmymngr3npso2tpnzuqf.streamlit.app/")
+st.write("For chatting with large PDF Files containing texts use this link:https://tanishqravulachatwithpdfs-ddkmymngr3npso2tpnzuqf.streamlit.app/")
 
 #------------------------------------------------------------
 #FUNCTIONS
