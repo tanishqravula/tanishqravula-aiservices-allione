@@ -28,30 +28,27 @@ def images_to_txt(path, language):
 @st.cache_data
 def convert_pdf_to_txt_pages(path):
     texts = []
-    rsrcmgr = PDFResourceManager()
-    retstr = StringIO()
-    laparams = LAParams()
-    device = TextConverter(rsrcmgr, retstr, laparams=laparams)
-    # fp = open(path, 'rb')
-    interpreter = PDFPageInterpreter(rsrcmgr, device)
-    size = 0
-    c = 0
-    file_pages = PDFPage.get_pages(path)
-    nbPages = len(list(file_pages))
-    for page in PDFPage.get_pages(path):
-      interpreter.process_page(page)
-      t = retstr.getvalue()
-      if c == 0:
-        texts.append(t)
-      else:
-        texts.append(t[size:])
-      c = c+1
-      size = len(t)
-    # text = retstr.getvalue()
-
-    # fp.close()
-    device.close()
-    retstr.close()
+    with open(path, 'rb') as fp:  # Open the PDF file in binary mode
+        rsrcmgr = PDFResourceManager()
+        retstr = StringIO()
+        laparams = LAParams()
+        device = TextConverter(rsrcmgr, retstr, laparams=laparams)
+        interpreter = PDFPageInterpreter(rsrcmgr, device)
+        size = 0
+        c = 0
+        file_pages = PDFPage.get_pages(fp)
+        nbPages = len(list(file_pages))
+        for page in PDFPage.get_pages(fp):
+            interpreter.process_page(page)
+            t = retstr.getvalue()
+            if c == 0:
+                texts.append(t)
+            else:
+                texts.append(t[size:])
+            c += 1
+            size = len(t)
+        device.close()
+        retstr.close()
     return texts, nbPages
 
 @st.cache_data
