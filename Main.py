@@ -29,6 +29,15 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from bs4 import BeautifulSoup
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import os
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+import google.generativeai as genai
+from langchain.vectorstores import FAISS
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chains.question_answering import load_qa_chain
+from langchain.prompts import PromptTemplate
+from PyPDF2 import PdfReader
 
 #import doc2txt
 
@@ -279,6 +288,22 @@ def generate_gemini(model_type, content):
         # Log the error message or handle it appropriately
         print(error_message)
         return None
+def get_pdf_text(pdf_docs):
+    text=""
+    for pdf in pdf_docs:
+        pdf_reader= PdfReader(pdf)
+        for page in pdf_reader.pages:
+            text+= page.extract_text()
+    return  text
+
+
+
+def get_text_chunks(text):
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
+    chunks = text_splitter.split_text(text)
+    return chunks
+
+
 
 
 
@@ -522,11 +547,10 @@ if prompt:
             if file_extension == 'pdf':
                 
                 if docattachment is not None:
-                    doc = fitz.open(stream=path, filetype="pdf")
-                    doc_content = ""
-                    for page_num in range(len(doc)):
-                        page = doc.load_page(page_num)
-                        doc_content += page.get_text()
+                    doc_content=''
+                    raw_text = get_pdf_text(path) # get the pdf text
+                    text_chunks = get_text_chunks(raw_text)
+                    doc_content+=text_chunks
                     texts, nbPages = images_to_txt(path, 'eng')
                     text_data_f = "\n\n".join(texts)
                     #text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
