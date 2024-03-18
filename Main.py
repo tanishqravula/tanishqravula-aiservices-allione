@@ -625,7 +625,16 @@ if prompt:
         if len(prmt['parts']) > 1:
             
             
-            response = model.generate_content(prmt['parts'],stream=True)
+            response = model.generate_content(prmt['parts'],stream=True,safety_settings=[
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+    ])
             response.resolve()
         else:
             response = st.session_state.chat.send_message(prmt['parts'][0])
