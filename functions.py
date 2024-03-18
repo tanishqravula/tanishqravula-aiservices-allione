@@ -5,12 +5,6 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from io import StringIO
-from io import BytesIO
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
-from pdfminer.pdfpage import PDFPage
-
 import base64
 #------- OCR ------------
 import pdf2image
@@ -32,38 +26,34 @@ def images_to_txt(path, language):
     return all_text, len(all_text)
 
 @st.cache_data
-def remove_null_bytes(input_bytes):
-    # Remove null bytes from the input bytes
-    return input_bytes.replace(b'\x00', b'')
-
-def convert_pdf_to_txt_pages(pdf_path):
-    with open(pdf_path, 'rb') as file:
-        pdf_bytes = file.read()
-
-    sanitized_bytes = remove_null_bytes(pdf_bytes)
-
+def convert_pdf_to_txt_pages(path):
     texts = []
-    with BytesIO(sanitized_bytes) as fp:
-        rsrcmgr = PDFResourceManager()
-        retstr = BytesIO()
-        device = TextConverter(rsrcmgr, retstr, laparams=LAParams())
-        interpreter = PDFPageInterpreter(rsrcmgr, device)
-        size = 0
-        c = 0
-        file_pages = PDFPage.get_pages(BytesIO(sanitized_bytes))
-        nbPages = len(list(file_pages))
-        for page in PDFPage.get_pages(BytesIO(sanitized_bytes)):
-            interpreter.process_page(page)
-            t = retstr.getvalue()
-            if c == 0:
-                texts.append(t)
-            else:
-                texts.append(t[size:])
-            c += 1
-            size = len(t)
-        device.close()
-        retstr.close()
+    rsrcmgr = PDFResourceManager()
+    retstr = StringIO()
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, retstr, laparams=laparams)
+    # fp = open(path, 'rb')
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+    size = 0
+    c = 0
+    file_pages = PDFPage.get_pages(path)
+    nbPages = len(list(file_pages))
+    for page in PDFPage.get_pages(path):
+      interpreter.process_page(page)
+      t = retstr.getvalue()
+      if c == 0:
+        texts.append(t)
+      else:
+        texts.append(t[size:])
+      c = c+1
+      size = len(t)
+    # text = retstr.getvalue()
+
+    # fp.close()
+    device.close()
+    retstr.close()
     return texts, nbPages
+
 @st.cache_data
 def convert_pdf_to_txt_file(path):
     texts = []
