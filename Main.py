@@ -6,10 +6,8 @@ import openpyxl
 from PIL import Image
 import pdf2image
 import pytesseract
-import fitz
 from pytesseract import Output, TesseractError
 from functions import convert_pdf_to_txt_pages, convert_pdf_to_txt_file, save_pages, displayPDF, images_to_txt
-from selenium.webdriver.chrome.options import Options
 import requests
 import PyPDF2 
 from docx import Document
@@ -23,12 +21,6 @@ from io import StringIO
 from io import BytesIO
 import html2text
 import docx
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium import webdriver
-from bs4 import BeautifulSoup
 
 #import doc2txt
 
@@ -183,7 +175,7 @@ def extract_text_from_website(url):
 
         return f"{text_content}\n\nTable Text:\n{table_text}\n"
     except Exception as e:
-        return "XYZ#&^^@^%@hx"
+        return f"Error: {e}"
 def extract_text_from_images_on_website(images):
     extracted_text = ""
     for image in images:
@@ -202,84 +194,6 @@ def extract_text_from_images_on_website(images):
             extracted_text += f"Error extracting text from image: {str(e)}\n"
 
     return extracted_text
-def extract_content_with_selenium(url):
-    try:
-        # Configure Chrome options for running in headless mode
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--disable-features=NetworkService")
-        chrome_options.add_argument("--window-size=1920x1080")
-        chrome_options.add_argument("--disable-features=VizDisplayCompositor")
-        chrome_options.add_argument('--ignore-certificate-errors')
- 
-
-        # Create the driver with the options
-        driver = webdriver.Chrome(options=chrome_options)
-
-        # Load the page with Selenium
-        driver.get(url)
-
-        # Wait up to 10 seconds for the page to load
-        # Wait for the page to finish loading all JavaScript
-        wait = WebDriverWait(driver, 10)
-        wait.until(EC.presence_of_element_located((By.XPATH, "//body[not(@class='loading')]")))
-
-        # Get the HTML of the page
-        html = driver.page_source
-
-        # Close the WebDriver
-        driver.quit()
-
-        # Parse HTML content using BeautifulSoup
-        soup = BeautifulSoup(html, 'html.parser')
-
-        # Extract desired content here
-        # For example, let's extract all text from paragraphs
-        paragraphs = soup.find_all('p')
-        text_content = '\n'.join([p.get_text() for p in paragraphs])
-        para_content = soup.get_text(separator='\n')
-        #text_content1=soup.get_text(separator='\n')
-
-
-        # Extract table content
-        tables = soup.find_all('table')
-        table_content = ""
-        for table in tables:
-            rows = table.find_all('tr')
-            for row in rows:
-                cols = row.find_all(['th', 'td'])
-                row_text = '\t'.join([col.get_text() for col in cols])
-                table_content += row_text + '\n'
-
-        # Close the browser
-        #driver.quit()
-
-        return text_content, table_content, para_content
-    except Exception as e:
-        st.error(f"Error extracting content from the website with Selenium: {e}")
-        return "","",""
-def generate_gemini(model_type, content):
-    try:
-        #content=str(content)
-        model = load_model()  # Ensure model is loaded
-        response = model.generate_content(content)
-        if hasattr(response, 'text'):
-            return response.text
-        else:
-            # Convert the response object to string and return
-            return str(response)
-    except ValueError as e:
-        error_message = f"An error occurred while generating content: {str(e)}"
-        # Log the error message or handle it appropriately
-        print(error_message)
-        return None
-
 
 
 
@@ -416,9 +330,9 @@ else:
     txtattachment = None
 if doc_atachment:
     if lang == 'Español':
-        docattachment = st.file_uploader("Sube tu archivo PDF, PPT, DOCX", type=['pdf', 'pptx', 'docx'])
+        docattachment = st.file_uploader("Sube tu archivo PDF, PPT, DOCX", type=['pdf', 'ppt', 'pptx', 'doc', 'docx'])
     else:
-        docattachment = st.file_uploader("Upload your PDF, PPT, DOCX file", type=['pdf', 'pptx', 'docx'])
+        docattachment = st.file_uploader("Upload your PDF, PPT, DOCX file", type=['pdf', 'ppt', 'pptx', 'doc', 'docx'])
 else:
     docattachment = None
 
@@ -466,29 +380,21 @@ if website_chat:
 
     if website_url:
         try:
-            website_text=''
-            text_content, table_content,para_content = extract_content_with_selenium(website_url)
-            website_text+=text_content
-            website_text+=table_content
-            website_text+=para_content
             website_response = requests.get(website_url)
             website_html = website_response.text
+
+             #Use Beautiful Soup to extract and summarize text content
             soup = BeautifulSoup(website_html, 'html.parser')
             paragraphs = soup.find_all('p')
             website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
             website_text+=extract_text_from_website(website_url)
+            #images = [Image.open(requests.get(img['src'], stream=True).raw) for img in soup.find_all('img')]
+            #image_text = extract_text_from_images_on_website(images)
+            #website_text+=image_text
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
-            #result = generate_gemini("gemini-pro", content)
-            #result1=generate_gemini("gemini-pro",content1)
-            if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
-                result=website_text
-                result1=''
-            else:
-                result = generate_gemini("gemini-pro", content)
-                result1=generate_gemini("gemini-pro",content1)
-                
-                
+            result = generate_content("gemini-pro", content)
+            result1=generate_content("gemini-pro",content1)
 
 
             # Summarize the text if needed
@@ -498,11 +404,9 @@ if website_chat:
             with st.chat_message('user'):
                 st.write(f"Content: {website_url}")
             with st.chat_message('model'):
-                st.write(f'Extracted content from website:{website_text}')
                 st.markdown(to_markdown(result))
                 st.markdown(to_markdown(result1))
-                #st.write(f'Extracted content from website:{website_text}')
-                
+                st.write(f'Extracted content from website:{website_text}')
 
 
 
@@ -529,16 +433,15 @@ if prompt:
             if file_extension == 'pdf':
                 
                 if docattachment is not None:
-                    doc = fitz.open(stream=path, filetype="pdf")
+                    reader = PyPDF2.PdfReader(docattachment)
                     doc_content = ""
-                    for page_num in range(len(doc)):
-                        page = doc.load_page(page_num)
-                        doc_content += page.get_text()
+                    for page_num in range(len(reader.pages)):
+                        doc_content += reader.pages[page_num].extract_text()
                     texts, nbPages = images_to_txt(path, 'eng')
                     text_data_f = "\n\n".join(texts)
                     #text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
                     doc_content+=text_data_f
-            elif file_extension == 'docx'or file_extension=='doc':
+            elif file_extension == 'docx':
                 docx_content = extract_text_from_docx(docattachment)
 
             elif file_extension == 'ppt' or file_extension == 'pptx':
@@ -608,8 +511,8 @@ if prompt:
         st.write('')
         prmt  = {'role': 'user', 'parts':[prompt+txt]}
 
-    if len(txt) > 900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999:
-        txt = txt[:900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999] + '...'
+    if len(txt) > 900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000:
+        txt = txt[:900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000] + '...'
     if image or url != '':
         if url != '':
             img = Image.open(requests.get(url, stream=True).raw)
@@ -627,9 +530,17 @@ if prompt:
       spinertxt = 'Wait a moment, I am thinking...'
     with st.spinner(spinertxt):
         if len(prmt['parts']) > 1:
-            
-            
-            response = model.generate_content(prmt['parts'],stream=True)
+            response = vision.generate_content(prmt['parts'],stream=True,safety_settings=[
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+    ]
+)
             response.resolve()
         else:
             response = st.session_state.chat.send_message(prmt['parts'][0])
