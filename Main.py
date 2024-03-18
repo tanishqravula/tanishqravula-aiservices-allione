@@ -52,7 +52,6 @@ image = Image.open("DALL·E 2024-01-15 00.41.44 - A cartoon image of a software 
 
 st.image(image, caption='ACCESS MY AI PRODUCTS', use_column_width=True)
 st.caption("By Tanishq Ravula")
-st.write('For chatting with large PDF Files containing texts use this link:https://tanishqravulachatwithpdfs-ddkmymngr3npso2tpnzuqf.streamlit.app/")
 
 #------------------------------------------------------------
 #LANGUAGE
@@ -69,6 +68,7 @@ with langcols[0]:
 if 'lang' not in st.session_state:
     st.session_state.lang = lang
 st.divider()
+st.write('For chatting with large PDF Files containing texts use this link:https://tanishqravulachatwithpdfs-ddkmymngr3npso2tpnzuqf.streamlit.app/")
 
 #------------------------------------------------------------
 #FUNCTIONS
