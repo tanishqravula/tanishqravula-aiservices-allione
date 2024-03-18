@@ -6,32 +6,6 @@ import openpyxl
 from PIL import Image
 import pdf2image
 import pytesseract
-from pytesseract import Output, TesseractError
-from functions import convert_pdf_to_txt_pages, convert_pdf_to_txt_file, save_pages, displayPDF, images_to_txt
-from selenium.webdriver.chrome.options import Options
-import requests
-import PyPDF2 
-from docx import Document
-from pptx import Presentation
-import io
-from bs4 import BeautifulSoup
-import textwrap
-from youtube_transcript_api import YouTubeTranscriptApi
-import speech_recognition as sr
-from io import StringIO
-from io import BytesIO
-import html2text
-import docx
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.b…
-[15:03, 18/03/2024] Tanishq Ravula: import streamlit as st
-import pandas as pd
-import google.generativeai as genai
-import re
-import openpyxl
-from PIL import Image
-import pdf2image
-import pytesseract
 import fitz
 from pytesseract import Output, TesseractError
 from functions import convert_pdf_to_txt_pages, convert_pdf_to_txt_file, save_pages, displayPDF, images_to_txt
