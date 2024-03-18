@@ -1,4 +1,30 @@
-import streamlit as st
+[13:05, 18/03/2024] Tanishq Ravula: import streamlit as st
+import pandas as pd
+import google.generativeai as genai
+import re
+import openpyxl
+from PIL import Image
+import pdf2image
+import pytesseract
+from pytesseract import Output, TesseractError
+from functions import convert_pdf_to_txt_pages, convert_pdf_to_txt_file, save_pages, displayPDF, images_to_txt
+from selenium.webdriver.chrome.options import Options
+import requests
+import PyPDF2 
+from docx import Document
+from pptx import Presentation
+import io
+from bs4 import BeautifulSoup
+import textwrap
+from youtube_transcript_api import YouTubeTranscriptApi
+import speech_recognition as sr
+from io import StringIO
+from io import BytesIO
+import html2text
+import docx
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.b…
+[15:03, 18/03/2024] Tanishq Ravula: import streamlit as st
 import pandas as pd
 import google.generativeai as genai
 import re
@@ -465,23 +491,24 @@ if website_chat:
         website_url = st.text_input("Enter the URL of the website:")
 
     if website_url:
-        website_text=''
-        text_content, table_content,para_content = extract_content_with_selenium(website_url)
-        website_text+=text_content
-        website_text+=table_content
-        website_text+=para_content
-        if(extract_text_from_website(website_url)!='XYZ#&^^@^%@hx'):
-            website_text+=extract_text_from_website(website_url)
-        content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
-        content1=f'organize the content: {website_text} into  tables '
+        try:
+            website_text=''
+            text_content, table_content,para_content = extract_content_with_selenium(website_url)
+            website_text+=text_content
+            website_text+=table_content
+            website_text+=para_content
+            if(extract_text_from_website(website_url)!='XYZ#&^^@^%@hx'):
+                website_text+=extract_text_from_website(website_url)
+            content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
+            content1=f'organize the content: {website_text} into  tables '
             #result = generate_gemini("gemini-pro", content)
             #result1=generate_gemini("gemini-pro",content1)
-        if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
-            result=website_text
-            result1=''
-        else:
-            result = generate_gemini("gemini-pro", content)
-            result1=generate_gemini("gemini-pro",content1)
+            if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
+                result=website_text
+                result1=''
+            else:
+                result = generate_gemini("gemini-pro", content)
+                result1=generate_gemini("gemini-pro",content1)
                 
                 
 
@@ -490,13 +517,20 @@ if website_chat:
             # (You can use a summarization library or method here)
 
             # Display the summarized text in the chat
-        with st.chat_message('user'):
-            st.write(f"Content: {website_url}")
-        with st.chat_message('model'):
-            st.write(f'Extracted content from website:{website_text}')
-            st.markdown(to_markdown(result))
-            st.markdown(to_markdown(result1))
-                #st.write(f'Extracted content from website:{website_text}'
+            with st.chat_message('user'):
+                st.write(f"Content: {website_url}")
+            with st.chat_message('model'):
+                st.write(f'Extracted content from website:{website_text}')
+                st.markdown(to_markdown(result))
+                st.markdown(to_markdown(result1))
+                #st.write(f'Extracted content from website:{website_text}')
+                
+
+
+
+        except Exception as e:
+            with st.chat_message('model'):
+                st.write(f"The website  does not allow to collect and fetch information according to the websites privacy and confidential information.You can try another website urls {str(e)}")
 if lang == 'Español':
   prompt = st.chat_input("Escribe tu mensaje")
 else:
