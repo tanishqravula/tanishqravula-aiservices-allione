@@ -52,6 +52,7 @@ image = Image.open("DALL·E 2024-01-15 00.41.44 - A cartoon image of a software 
 
 st.image(image, caption='ACCESS MY AI PRODUCTS', use_column_width=True)
 st.caption("By Tanishq Ravula")
+st.write('For chatting with large PDF Files containing texts use this link:https://tanishqravulachatwithpdfs-ddkmymngr3npso2tpnzuqf.streamlit.app/")
 
 #------------------------------------------------------------
 #LANGUAGE
