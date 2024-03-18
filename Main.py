@@ -522,11 +522,12 @@ if prompt:
             if file_extension == 'pdf':
                 
                 if docattachment is not None:
-                    doc_content=''
-                    texts1,nbPages1=convert_pdf_to_txt_pages(path)
+                    doc = fitz.open(stream=path, filetype="pdf")
+                    doc_content = ""
+                    for page_num in range(len(doc)):
+                        page = doc.load_page(page_num)
+                        doc_content += page.get_text()
                     texts, nbPages = images_to_txt(path, 'eng')
-                    text_data="\n\n".join(texts1)
-                    doc_content+=text_data
                     text_data_f = "\n\n".join(texts)
                     #text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
                     doc_content+=text_data_f
