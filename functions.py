@@ -36,10 +36,13 @@ def remove_null_bytes(input_bytes):
     # Remove null bytes from the input bytes
     return input_bytes.replace(b'\x00', b'')
 
-def convert_pdf_to_txt_pages(pdf_bytes):
+def convert_pdf_to_txt_pages(pdf_path):
+    with open(pdf_path, 'rb') as file:
+        pdf_bytes = file.read()
+
     texts = []
-    with BytesIO(pdf_bytes) as fp:
-        sanitized_bytes = remove_null_bytes(fp.read())
+    sanitized_bytes = remove_null_bytes(pdf_bytes)
+    with BytesIO(sanitized_bytes) as fp:
         rsrcmgr = PDFResourceManager()
         retstr = BytesIO()
         device = TextConverter(rsrcmgr, retstr, laparams=LAParams())
