@@ -6,6 +6,7 @@ import openpyxl
 from PIL import Image
 import pdf2image
 import pytesseract
+import fitz
 from pytesseract import Output, TesseractError
 from functions import convert_pdf_to_txt_pages, convert_pdf_to_txt_file, save_pages, displayPDF, images_to_txt
 from selenium.webdriver.chrome.options import Options
@@ -522,10 +523,11 @@ if prompt:
             if file_extension == 'pdf':
                 
                 if docattachment is not None:
-                    reader = PyPDF2.PdfReader(docattachment)
+                    doc = fitz.open(stream=path, filetype="pdf")
                     doc_content = ""
-                    for page_num in range(len(reader.pages)):
-                        doc_content += reader.pages[page_num].extract_text()
+                    for page_num in range(len(doc)):
+                        page = doc.load_page(page_num)
+                        doc_content += page.get_text()
                     texts, nbPages = images_to_txt(path, 'eng')
                     text_data_f = "\n\n".join(texts)
                     #text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
