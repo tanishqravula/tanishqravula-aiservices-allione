@@ -416,9 +416,9 @@ else:
     txtattachment = None
 if doc_atachment:
     if lang == 'Español':
-        docattachment = st.file_uploader("Sube tu archivo PDF, PPT, DOCX", type=['pdf', 'ppt', 'pptx', 'doc', 'docx'])
+        docattachment = st.file_uploader("Sube tu archivo PDF, PPT, DOCX", type=['pdf', 'pptx', 'docx'])
     else:
-        docattachment = st.file_uploader("Upload your PDF, PPT, DOCX file", type=['pdf', 'ppt', 'pptx', 'doc', 'docx'])
+        docattachment = st.file_uploader("Upload your PDF, PPT, DOCX file", type=['pdf', 'pptx', 'docx'])
 else:
     docattachment = None
 
