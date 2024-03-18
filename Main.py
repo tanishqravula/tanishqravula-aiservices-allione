@@ -1,4 +1,4 @@
-[13:05, 18/03/2024] Tanishq Ravula: import streamlit as st
+import streamlit as st
 import pandas as pd
 import google.generativeai as genai
 import re
