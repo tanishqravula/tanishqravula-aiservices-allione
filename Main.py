@@ -471,8 +471,12 @@ if website_chat:
             website_text+=text_content
             website_text+=table_content
             website_text+=para_content
-            if(extract_text_from_website(website_url)!='XYZ#&^^@^%@hx'):
-                website_text+=extract_text_from_website(website_url)
+            website_response = requests.get(website_url)
+            website_html = website_response.text
+            soup = BeautifulSoup(website_html, 'html.parser')
+            paragraphs = soup.find_all('p')
+            website_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
+            website_text+=extract_text_from_website(website_url)
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             #result = generate_gemini("gemini-pro", content)
