@@ -621,11 +621,10 @@ if prompt:
       spinertxt = 'Wait a moment, I am thinking...'
     with st.spinner(spinertxt):
         if len(prmt['parts']) > 1:
-            
-            
-            
-            response = vision.generate_content(prmt['parts'],stream=True)
-            #response = model.generate_content(prmt['parts'],stream=True)
+            if image or url != '':
+                response = vision.generate_content(prmt['parts'],stream=True)
+            else:
+                response = model.generate_content(prmt['parts'],stream=True)
             response.resolve()
         else:
             response = st.session_state.chat.send_message(prmt['parts'][0])
