@@ -623,7 +623,8 @@ if prompt:
         if len(prmt['parts']) > 1:
             
             
-            response = model.generate_content(prmt['parts'],stream=True)
+            #response = model.generate_content(prmt['parts'],stream=True)
+            response = vision.generate_content(prmt['parts'],stream=True)
             response.resolve()
         else:
             response = st.session_state.chat.send_message(prmt['parts'][0])
