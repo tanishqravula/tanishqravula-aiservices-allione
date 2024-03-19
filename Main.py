@@ -70,6 +70,7 @@ if 'lang' not in st.session_state:
 st.divider()
 st.write("For chatting with large or very large PDF Files containing texts use this link:https://tanishqravulachatwithpdfs-ddkmymngr3npso2tpnzuqf.streamlit.app/")
 st.write("For chatting with medium sized to somewhat large PDF Files containing images and texts use this link:https://tanishqravulachatwithpdfscontainingsomeimagesandmediumtexts-vc.streamlit.app/")
+st.write("For chatting with large or very large CSV or EXCEL Files use this link:https://tanishqravulachatwithlargecsvsandexcels-ymgxpc5ebaapxa8yav4ceh.streamlit.app/")
 
 
 #------------------------------------------------------------
