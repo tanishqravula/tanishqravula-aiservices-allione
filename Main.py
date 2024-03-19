@@ -573,7 +573,7 @@ if prompt:
 
         if file_extension == 'csv':
              df = pd.read_csv(csvexcelattachment)
-             txt += '   Dataframe: \n' + str(df)
+             txt += '   Dataframe: \n' + df.to_string()
         elif file_extension in ['xlsx', 'xls']:
             wb = openpyxl.load_workbook(csvexcelattachment)
             sheet = wb.active
