@@ -238,7 +238,7 @@ def extract_content_with_selenium(url):
         html = driver.page_source
 
         # Close the WebDriver
-        driver.quit()
+        #driver.quit()
 
         # Parse HTML content using BeautifulSoup
         soup = BeautifulSoup(html, 'html.parser')
@@ -262,7 +262,7 @@ def extract_content_with_selenium(url):
                 table_content += row_text + '\n'
 
         # Close the browser
-        #driver.quit()
+        driver.quit()
 
         return text_content, table_content, para_content
     except Exception as e:
