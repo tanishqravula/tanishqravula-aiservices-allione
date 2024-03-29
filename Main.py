@@ -238,7 +238,7 @@ def extract_content_with_selenium(url):
         html = driver.page_source
 
         # Close the WebDriver
-        #driver.quit()
+        driver.quit()
 
         # Parse HTML content using BeautifulSoup
         soup = BeautifulSoup(html, 'html.parser')
@@ -262,7 +262,7 @@ def extract_content_with_selenium(url):
                 table_content += row_text + '\n'
 
         # Close the browser
-        driver.quit()
+        #driver.quit()
 
         return text_content, table_content, para_content
     except Exception as e:
@@ -475,8 +475,8 @@ if website_chat:
             website_text+=text_content
             website_text+=table_content
             website_text+=para_content
-            if(extract_text_from_website(website_url)!='XYZ#&^^@^%@hx'):
-                website_text+=extract_text_from_website(website_url)
+            #if(extract_text_from_website(website_url)!='XYZ#&^^@^%@hx'):
+                #website_text+=extract_text_from_website(website_url)
             content=f'summarise this content briefly:{website_text} without missing even one word from the text fetched from information:{website_text} and complete the whole generated content'
             content1=f'organize the content: {website_text} into  tables '
             #result = generate_gemini("gemini-pro", content)
@@ -498,7 +498,7 @@ if website_chat:
                     st.write(f'Extracted content from website:{website_text}')
                 st.markdown(to_markdown(result))
                 st.markdown(to_markdown(result1))
-                st.write(f'Extracted content from website:{website_text}')
+                #st.write(f'Extracted content from website:{website_text}')
                 
 
 
