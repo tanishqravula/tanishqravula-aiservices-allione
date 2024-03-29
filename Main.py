@@ -481,8 +481,8 @@ if website_chat:
             content1=f'organize the content: {website_text} into  tables '
             #result = generate_gemini("gemini-pro", content)
             #result1=generate_gemini("gemini-pro",content1)
-            #result = generate_gemini("gemini-pro", content)
-            #result1=generate_gemini("gemini-pro",content1)
+            result = generate_gemini("gemini-pro", content)
+            result1=generate_gemini("gemini-pro",content1)
                 
                 
 
@@ -496,8 +496,8 @@ if website_chat:
             with st.chat_message('model'):
                 if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
                     st.write(f'Extracted content from website:{website_text}')
-                st.markdown(to_markdown(generate_gemini("gemini-pro", content)))
-                st.markdown(to_markdown(generate_gemini("gemini-pro",content1)))
+                st.markdown(to_markdown(result))
+                st.markdown(to_markdown(result1))
                 #st.write(f'Extracted content from website:{website_text}')
                 
 
