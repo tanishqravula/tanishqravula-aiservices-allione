@@ -494,12 +494,10 @@ if website_chat:
             with st.chat_message('user'):
                 st.write(f"Content: {website_url}")
             with st.chat_message('model'):
-                if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
-                    st.write(f'Extracted content from website:{website_text}')
-                else:
-                    
-                    st.markdown(to_markdown(generate_gemini("gemini-pro", content)))
-                    st.markdown(to_markdown(generate_gemini("gemini-pro",content1)))
+                #if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
+                st.write(f'Extracted content from website:{website_text}')  
+                st.markdown(to_markdown(generate_gemini("gemini-pro", content)))
+                st.markdown(to_markdown(generate_gemini("gemini-pro",content1)))
                     #st.write(f'Extracted content from website:{website_text}')
                 
 
