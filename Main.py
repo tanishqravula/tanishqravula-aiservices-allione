@@ -378,10 +378,10 @@ with cols[3]:
       graphviz_mode = st.toggle("Graphviz mode", value=False, help="Activate this mode to generate a graph with graphviz in .dot from your message")
 with cols[4]:
     if lang == 'Español':
-        doc_atachment = st.toggle("Adjuntar PDF, PPT, DOCX", value=False, help="Activa este modo para adjuntar un archivo PDF, PPT o DOCX y que el chatbot pueda leerlo")
+        doc_atachment = st.toggle("Adjuntar PDF, PPTX, DOCX", value=False, help="Activa este modo para adjuntar un archivo PDF, PPT o DOCX y que el chatbot pueda leerlo")
     else:
 
-        doc_atachment = st.toggle("Attach PDF, PPT, DOCX", value=False, help="Activate this mode to attach a PDF, PPT, or DOCX file and let the chatbot read it")
+        doc_atachment = st.toggle("Attach PDF, PPTX, DOCX", value=False, help="Activate this mode to attach a PDF, PPT, or DOCX file and let the chatbot read it")
 with cols[5]:
     if lang == 'Español':
         website_chat = st.toggle("Chatear con sitios web", value=False,
