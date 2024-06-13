@@ -32,9 +32,6 @@ from bs4 import BeautifulSoup
 
 #import doc2txt
 
-#Je t'aime plus que les mots,
-#Plus que les sentiments,
-#Plus que la vie elle-même
 GOOGLE_API_KEY='AIzaSyA8kXPwjzC5WR7qPp5xuZjNBjclC4kchE8'
 
 st.set_page_config(
@@ -43,8 +40,7 @@ st.set_page_config(
     layout="wide",
 )
 # Path: Main.py
-#Author: Sergio Demis Lopez Martinez
-#------------------------------------------------------------
+
 #HEADER
 st.markdown('''Powered by Tanishq ''', unsafe_allow_html=True)
 
