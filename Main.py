@@ -32,7 +32,7 @@ from bs4 import BeautifulSoup
 
 #import doc2txt
 
-GOOGLE_API_KEY='AIzaSyAE8nQWFGH1VPC8KRuazzd8SuVQVINq-44'
+GOOGLE_API_KEY='AIzaSyA8kXPwjzC5WR7qPp5xuZjNBjclC4kchE8'
 
 st.set_page_config(
     page_title="Tanishq AI Chat",
