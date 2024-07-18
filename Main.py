@@ -81,8 +81,7 @@ def extract_graphviz_info(text: str) -> list[str]:
   text.
   """
 
-  graphviz_info  = text.split('
-')
+  graphviz_info  = text.split('')
 
   return [graph for graph in graphviz_info if ('graph' in graph or 'digraph' in graph) and ('{' in graph and '}' in graph)]
 
