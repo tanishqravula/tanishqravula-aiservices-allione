@@ -98,7 +98,7 @@ def append_message(message: dict) -> None:
     st.session_state.chat_session.append({'user': message})
     return
 
-@st.cache_resource
+@st.cache_data()
 def load_model() -> genai.GenerativeModel:
     """
     The function load_model() returns an instance of the genai.GenerativeModel class initialized with the model name
@@ -108,7 +108,7 @@ def load_model() -> genai.GenerativeModel:
     model = genai.GenerativeModel('gemini-1.5-pro')
     return model
 
-@st.cache_resource
+@st.cache_data()
 def load_modelvision() -> genai.GenerativeModel:
     """
     The function load_modelvision loads a generative model for vision tasks using the gemini-pro-vision model.
