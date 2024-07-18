@@ -30,10 +30,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import asyncio
-
+from dotenv import load_dotenv
 #import doc2txt
+load_dotenv()
 
-GOOGLE_API_KEY='AIzaSyAE8nQWFGH1VPC8KRuazzd8SuVQVINq-44'
+#GOOGLE_API_KEY='AIzaSyAE8nQWFGH1VPC8KRuazzd8SuVQVINq-44'
 
 st.set_page_config(
     page_title="Tanishq AI Chat",
@@ -288,7 +289,7 @@ def generate_gemini(model_type, content):
 
 #------------------------------------------------------------
 #CONFIGURATION
-genai.configure(api_key=GOOGLE_API_KEY)
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 model = load_model()
 
