@@ -104,7 +104,7 @@ def load_model() -> genai.GenerativeModel:
     'gemini-pro'.
     :return: an instance of the genai.GenerativeModel class.
     """
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-pro')
     return model
 
 @st.cache_resource
@@ -602,8 +602,8 @@ if prompt:
         st.write('')
         prmt  = {'role': 'user', 'parts':[prompt+txt]}
 
-    if len(txt) > 900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999:
-        txt = txt[:900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999] + '...'
+    if len(txt) > 9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999:
+        txt = txt[:9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999] + '...'
     if image or url != '':
         if url != '':
             img = Image.open(requests.get(url, stream=True).raw)
@@ -622,46 +622,29 @@ if prompt:
     with st.spinner(spinertxt):
         if len(prmt['parts']) > 1:
             if image_atachment:
-                response = vision.generate_content(prmt['parts'],stream=True,safety_settings = [
-    {
-      "category": "HARM_CATEGORY_HARASSMENT",
-      "threshold": "BLOCK_NONE"
-    },
-    {
-      "category": "HARM_CATEGORY_HATE_SPEECH",
-      "threshold": "BLOCK_NONE"
-    },
-    {
-      "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-      "threshold": "BLOCK_NONE"
-    },
-    {
-      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-      "threshold": "BLOCK_NONE"
-    }
-    ])
+                response = vision.generate_content(prmt['parts'],stream=True)
             else:
-                response = model.generate_content(prmt['parts'],stream=True,safety_settings = [
-    {
-      "category": "HARM_CATEGORY_HARASSMENT",
-      "threshold": "BLOCK_NONE"
-    },
-    {
-      "category": "HARM_CATEGORY_HATE_SPEECH",
-      "threshold": "BLOCK_NONE"
-    },
-    {
-      "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-      "threshold": "BLOCK_NONE"
-    },
-    {
-      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-      "threshold": "BLOCK_NONE"
-    }
-    ])
+                response = model.generate_content(prmt['parts'],stream=True)
             response.resolve()
         else:
-            response = st.session_state.chat.send_message(prmt['parts'][0])
+            response = st.session_state.chat.send_message(prmt['parts'][0],safety_settings = [
+    {
+      "category": "HARM_CATEGORY_HARASSMENT",
+      "threshold": "BLOCK_NONE"
+    },
+    {
+      "category": "HARM_CATEGORY_HATE_SPEECH",
+      "threshold": "BLOCK_NONE"
+    },
+    {
+      "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+      "threshold": "BLOCK_NONE"
+    },
+    {
+      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+      "threshold": "BLOCK_NONE"
+    }
+    ])
 
         try:
           append_message({'role': 'model', 'parts':response.text})
