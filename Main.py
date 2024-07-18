@@ -625,7 +625,7 @@ if prompt:
                 response = model.generate_content(prmt['parts'],stream=True)
             response.resolve()
         else:
-            response = st.session_state.chat.send_message(prmt['parts'][0])
+            response = st.session_state.chat.send_message(prmt['parts'])
 
         try:
           append_message({'role': 'model', 'parts':response.text})
