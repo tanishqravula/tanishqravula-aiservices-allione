@@ -29,6 +29,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from bs4 import BeautifulSoup
+import asyncio
 
 #import doc2txt
 
@@ -98,7 +99,7 @@ def append_message(message: dict) -> None:
     return
 
 @st.cache_resource
-def load_model() -> genai.GenerativeModel:
+async def load_model() -> genai.GenerativeModel:
     """
     The function load_model() returns an instance of the genai.GenerativeModel class initialized with the model name
     'gemini-pro'.
@@ -108,7 +109,7 @@ def load_model() -> genai.GenerativeModel:
     return model
 
 @st.cache_resource
-def load_modelvision() -> genai.GenerativeModel:
+async def load_modelvision() -> genai.GenerativeModel:
     """
     The function load_modelvision loads a generative model for vision tasks using the gemini-pro-vision model.
     :return: an instance of the genai.GenerativeModel class.
@@ -265,7 +266,7 @@ def extract_content_with_selenium(url):
     except Exception as e:
         st.error(f"Error extracting content from the website with Selenium: {e}")
         return "","",""
-def generate_gemini(model_type, content):
+async def generate_gemini(model_type, content):
     try:
         #content=str(content)
         model = load_model()  # Ensure model is loaded
