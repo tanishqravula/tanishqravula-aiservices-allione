@@ -99,7 +99,7 @@ def append_message(message: dict) -> None:
     return
 
 @st.cache_resource
-async def load_model() -> genai.GenerativeModel:
+def load_model() -> genai.GenerativeModel:
     """
     The function load_model() returns an instance of the genai.GenerativeModel class initialized with the model name
     'gemini-pro'.
@@ -109,7 +109,7 @@ async def load_model() -> genai.GenerativeModel:
     return model
 
 @st.cache_resource
-async def load_modelvision() -> genai.GenerativeModel:
+def load_modelvision() -> genai.GenerativeModel:
     """
     The function load_modelvision loads a generative model for vision tasks using the gemini-pro-vision model.
     :return: an instance of the genai.GenerativeModel class.
