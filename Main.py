@@ -620,7 +620,7 @@ if prompt:
     else:
       spinertxt = 'Wait a moment, I am thinking...'
     with st.spinner(spinertxt):
-        if len(prmt['parts']) > 1:
+        if len(prmt['parts']) > 0:
             if image_atachment:
                 response = vision.generate_content(prmt['parts'],stream=True)
             else:
