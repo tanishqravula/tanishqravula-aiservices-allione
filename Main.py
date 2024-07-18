@@ -323,7 +323,7 @@ if 'welcome' not in st.session_state or lang != st.session_state.lang:
         st.write(st.session_state.welcome.text)
 else:
     with st.chat_message('ai'):
-        st.write(st.session_state.welcome.text)
+        st.write('hello')
 
 if len(st.session_state.chat_session) > 0:
     count = 0
