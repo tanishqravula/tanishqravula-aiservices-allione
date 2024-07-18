@@ -312,13 +312,15 @@ if 'messages' not in st.session_state:
 
 if 'welcome' not in st.session_state or lang != st.session_state.lang:
     st.session_state.lang = lang
-    st.session_state.welcome ='Welcome to NextGenAi'
+    welcome  = model.generate_content(f''' Da un saludo de bienvenida al usuario y sugiere que puede hacer (Puedes describir imágenes, responder preguntas, leer archivos texto, leer tablas,generar gráficos con graphviz, etc) eres un chatbot en una aplicación de chat creada en streamlit y python. generate the answer in {lang}''') 
+    welcome.resolve()
+    st.session_state.welcome =welcome
 
     with st.chat_message('ai'):
-        st.write(st.session_state.welcome)
+        st.write(st.session_state.welcome.text)
 else:
     with st.chat_message('ai'):
-        st.write(st.session_state.welcome)
+        st.write(st.session_state.welcome.text)
 
 if len(st.session_state.chat_session) > 0:
     count = 0
