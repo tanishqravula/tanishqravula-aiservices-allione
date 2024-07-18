@@ -312,18 +312,15 @@ if 'messages' not in st.session_state:
 
 if 'welcome' not in st.session_state or lang != st.session_state.lang:
     st.session_state.lang = lang
-    welcome  = model.generate_content(f'''
-    Da un saludo de bienvenida al usuario y sugiere que puede hacer
-    (Puedes describir imágenes, responder preguntas, leer archivos texto, leer tablas,generar gráficos con graphviz, etc)
-    eres un chatbot en una aplicación de chat creada en streamlit y python. generate the answer in {lang}''')
+    welcome  = 'Welcome! I am a chatbot in a chat application created using Streamlit and Python. I can help you with a variety of tasks such as describing images, answering questions, reading text files, reading tables, generating graphs with Graphviz,reading documents,chatting with websites,chatting with youtube urls and more. How can I assist you today?'
     welcome.resolve()
     st.session_state.welcome =welcome
 
     with st.chat_message('ai'):
-        st.write(st.session_state.welcome.text)
+        st.write(st.session_state.welcome)
 else:
     with st.chat_message('ai'):
-        st.write(st.session_state.welcome.text)
+        st.write(st.session_state.welcome)
 
 if len(st.session_state.chat_session) > 0:
     count = 0
