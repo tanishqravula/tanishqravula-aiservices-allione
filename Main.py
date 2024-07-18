@@ -7,6 +7,7 @@ from PIL import Image
 import pdf2image
 import pytesseract
 import fitz
+import os
 from pytesseract import Output, TesseractError
 from functions import convert_pdf_to_txt_pages, convert_pdf_to_txt_file, save_pages, displayPDF, images_to_txt
 from selenium.webdriver.chrome.options import Options
