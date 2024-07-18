@@ -313,7 +313,7 @@ if 'messages' not in st.session_state:
 if 'welcome' not in st.session_state or lang != st.session_state.lang:
     st.session_state.lang = lang
     welcome  = 'Welcome! I am a chatbot in a chat application created using Streamlit and Python. I can help you with a variety of tasks such as describing images, answering questions, reading text files, reading tables, generating graphs with Graphviz,reading documents,chatting with websites,chatting with youtube urls and more. How can I assist you today?'
-    welcome.resolve()
+
     st.session_state.welcome =welcome
 
     with st.chat_message('ai'):
