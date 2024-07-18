@@ -622,9 +622,43 @@ if prompt:
     with st.spinner(spinertxt):
         if len(prmt['parts']) > 1:
             if image_atachment:
-                response = vision.generate_content(prmt['parts'],stream=True)
+                response = vision.generate_content(prmt['parts'],stream=True,safety_settings = [
+    {
+      "category": "HARM_CATEGORY_HARASSMENT",
+      "threshold": "BLOCK_NONE"
+    },
+    {
+      "category": "HARM_CATEGORY_HATE_SPEECH",
+      "threshold": "BLOCK_NONE"
+    },
+    {
+      "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+      "threshold": "BLOCK_NONE"
+    },
+    {
+      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+      "threshold": "BLOCK_NONE"
+    }
+    ])
             else:
-                response = model.generate_content(prmt['parts'],stream=True)
+                response = model.generate_content(prmt['parts'],stream=True,safety_settings = [
+    {
+      "category": "HARM_CATEGORY_HARASSMENT",
+      "threshold": "BLOCK_NONE"
+    },
+    {
+      "category": "HARM_CATEGORY_HATE_SPEECH",
+      "threshold": "BLOCK_NONE"
+    },
+    {
+      "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+      "threshold": "BLOCK_NONE"
+    },
+    {
+      "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+      "threshold": "BLOCK_NONE"
+    }
+    ])
             response.resolve()
         else:
             response = st.session_state.chat.send_message(prmt['parts'][0])
