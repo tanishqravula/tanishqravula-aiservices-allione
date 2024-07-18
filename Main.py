@@ -104,7 +104,7 @@ def load_model() -> genai.GenerativeModel:
     'gemini-pro'.
     :return: an instance of the genai.GenerativeModel class.
     """
-    model = genai.GenerativeModel('gemini-1.5-pro')
+    model = genai.GenerativeModel('gemini-1.5-flash')
     return model
 
 @st.cache_resource
