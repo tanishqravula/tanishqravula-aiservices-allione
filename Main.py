@@ -266,7 +266,7 @@ def extract_content_with_selenium(url):
     except Exception as e:
         st.error(f"Error extracting content from the website with Selenium: {e}")
         return "","",""
-async def generate_gemini(model_type, content):
+def generate_gemini(model_type, content):
     try:
         #content=str(content)
         model = load_model()  # Ensure model is loaded
