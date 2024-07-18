@@ -7,7 +7,6 @@ from PIL import Image
 import pdf2image
 import pytesseract
 import fitz
-import os
 from pytesseract import Output, TesseractError
 from functions import convert_pdf_to_txt_pages, convert_pdf_to_txt_file, save_pages, displayPDF, images_to_txt
 from selenium.webdriver.chrome.options import Options
@@ -30,12 +29,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from bs4 import BeautifulSoup
-import asyncio
-from dotenv import load_dotenv
-#import doc2txt
-load_dotenv()
 
-#GOOGLE_API_KEY='AIzaSyAE8nQWFGH1VPC8KRuazzd8SuVQVINq-44'
+#import doc2txt
+
+GOOGLE_API_KEY='AIzaSyAE8nQWFGH1VPC8KRuazzd8SuVQVINq-44'
 
 st.set_page_config(
     page_title="Tanishq AI Chat",
@@ -84,7 +81,8 @@ def extract_graphviz_info(text: str) -> list[str]:
   text.
   """
 
-  graphviz_info  = text.split('```')
+  graphviz_info  = text.split('
+')
 
   return [graph for graph in graphviz_info if ('graph' in graph or 'digraph' in graph) and ('{' in graph and '}' in graph)]
 
@@ -100,7 +98,7 @@ def append_message(message: dict) -> None:
     st.session_state.chat_session.append({'user': message})
     return
 
-@st.cache_data()
+@st.cache_resource
 def load_model() -> genai.GenerativeModel:
     """
     The function load_model() returns an instance of the genai.GenerativeModel class initialized with the model name
@@ -110,7 +108,7 @@ def load_model() -> genai.GenerativeModel:
     model = genai.GenerativeModel('gemini-1.5-pro')
     return model
 
-@st.cache_data()
+@st.cache_resource
 def load_modelvision() -> genai.GenerativeModel:
     """
     The function load_modelvision loads a generative model for vision tasks using the gemini-pro-vision model.
@@ -290,7 +288,7 @@ def generate_gemini(model_type, content):
 
 #------------------------------------------------------------
 #CONFIGURATION
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+genai.configure(api_key=GOOGLE_API_KEY)
 
 model = load_model()
 
@@ -312,15 +310,18 @@ if 'messages' not in st.session_state:
 
 if 'welcome' not in st.session_state or lang != st.session_state.lang:
     st.session_state.lang = lang
-    welcome  = 'Welcome! I am a chatbot in a chat application created using Streamlit and Python. I can help you with a variety of tasks such as describing images, answering questions, reading text files, reading tables, generating graphs with Graphviz,reading documents,chatting with websites,chatting with youtube urls and more. How can I assist you today?'
-
-    st.session_state.welcome =welcome
+    welcome  = model.generate_content(f'''
+    Da un saludo de bienvenida al usuario y sugiere que puede hacer
+    (Puedes describir imágenes, responder preguntas, leer archivos texto, leer tablas,generar gráficos con graphviz, etc)
+    eres un chatbot en una aplicación de chat creada en streamlit y python. generate the answer in {lang}''')
+    welcome.resolve()
+    st.session_state.welcome = welcome
 
     with st.chat_message('ai'):
-        st.write(st.session_state.welcome)
+        st.write(st.session_state.welcome.text)
 else:
     with st.chat_message('ai'):
-        st.write(st.session_state.welcome)
+        st.write(st.session_state.welcome.text)
 
 if len(st.session_state.chat_session) > 0:
     count = 0
@@ -627,7 +628,7 @@ if prompt:
                 response = model.generate_content(prmt['parts'],stream=True)
             response.resolve()
         else:
-            response = st.session_state.chat.send_message(prmt['parts'])
+            response = st.session_state.chat.send_message(prmt['parts'][0])
 
         try:
           append_message({'role': 'model', 'parts':response.text})
@@ -636,7 +637,3 @@ if prompt:
 
 
         st.rerun()
-
-
-
-#st.session_state.chat_session
