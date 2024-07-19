@@ -632,7 +632,7 @@ if prompt:
         try:
           append_message({'role': 'model', 'parts':response.text})
         except Exception as e:
-          append_message({'role': 'model', 'parts':f'{type(e).name}: {e}'})
+          append_message({'role': 'model', 'parts':f'error: {e}'})
 
 
         st.rerun()
