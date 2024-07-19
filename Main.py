@@ -625,7 +625,7 @@ if prompt:
                 response = vision.generate_content(prmt['parts'],stream=True)
             else:
                 response = vision.generate_content(prmt['parts'],stream=True)
-            #response.resolve()
+            response.resolve()
         else:
             response = st.session_state.chat.send_message(prmt['parts'][0])
 
