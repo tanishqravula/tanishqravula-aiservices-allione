@@ -107,7 +107,7 @@ def load_model() -> genai.GenerativeModel:
     'gemini-pro'.
     :return: an instance of the genai.GenerativeModel class.
     """
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-pro')
     return model
 
 @st.cache_data()
@@ -221,7 +221,7 @@ def extract_content_with_selenium(url):
         chrome_options.add_argument("--window-size=1920x1080")
         chrome_options.add_argument("--disable-features=VizDisplayCompositor")
         chrome_options.add_argument('--ignore-certificate-errors')
- 
+
 
         # Create the driver with the options
         driver = webdriver.Chrome(options=chrome_options)
@@ -480,8 +480,8 @@ if website_chat:
             #result1=generate_gemini("gemini-pro",content1)
             #result = generate_gemini("gemini-pro", content)
             #result1=generate_gemini("gemini-pro",content1)
-                
-                
+
+
 
 
             # Summarize the text if needed
@@ -496,7 +496,7 @@ if website_chat:
                 st.markdown(to_markdown(generate_gemini("gemini-pro", content)))
                 st.markdown(to_markdown(generate_gemini("gemini-pro",content1)))
                     #st.write(f'Extracted content from website:{website_text}')
-                
+
 
 
 
@@ -521,7 +521,7 @@ if prompt:
         file_extension = docattachment.name.split('.')[-1].lower()
         try:
             if file_extension == 'pdf':
-                
+
                 if docattachment is not None:
                     doc = fitz.open(stream=path, filetype="pdf")
                     doc_content = ""
@@ -560,7 +560,7 @@ if prompt:
                     txt += f'   Archivo adjunto (PPT): \n{ppt_content}'
                 else:
                     txt += f'   Attached file (PPT): \n{ppt_content}'
-    
+
 
 
 
@@ -587,7 +587,7 @@ if prompt:
     else:
         st.write('')
         prmt  = {'role': 'user', 'parts':[prompt+txt]}
-    
+
 
 
     if graphviz_mode:
@@ -602,8 +602,8 @@ if prompt:
         st.write('')
         prmt  = {'role': 'user', 'parts':[prompt+txt]}
 
-    if len(txt) > 9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999:
-        txt = txt[:9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999] + '...'
+    if len(txt) > 9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999:
+        txt = txt[:9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999] + '...'
     if image or url != '':
         if url != '':
             img = Image.open(requests.get(url, stream=True).raw)
@@ -624,7 +624,7 @@ if prompt:
             if image_atachment:
                 response = vision.generate_content(prmt['parts'],stream=True)
             else:
-                response = model.generate_content(prmt['parts'],stream=True)
+                response = vision.generate_content(prmt['parts'],stream=True)
             response.resolve()
         else:
             response = st.session_state.chat.send_message(prmt['parts'][0])
@@ -632,7 +632,7 @@ if prompt:
         try:
           append_message({'role': 'model', 'parts':response.text})
         except Exception as e:
-          append_message({'role': 'model', 'parts':f'error: {e}'})
+          append_message({'role': 'model', 'parts':f'{type(e).name}: {e}'})
 
 
         st.rerun()
