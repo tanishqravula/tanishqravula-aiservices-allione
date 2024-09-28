@@ -578,11 +578,11 @@ if prompt:
 
     if docattachment1:
         path =docattachment1.read()
-        file_extension = docattachment.name.split('.')[-1].lower()
+        file_extension = docattachment1.name.split('.')[-1].lower()
         try:
             if file_extension == 'pdf':
 
-                if docattachment is not None:
+                if docattachment1 is not None:
                     doc = fitz.open(stream=path, filetype="pdf")
                     doc_content = ""
                     for page_num in range(len(doc)):
