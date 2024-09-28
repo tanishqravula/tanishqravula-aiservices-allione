@@ -433,7 +433,7 @@ if doc_atachment1:
     if lang == 'Español':
         docattachment1 = st.file_uploader("Sube tu archivo PDF", type=['pdf'])
     else:
-        docattachment1 = st.file_uploader("Upload your PDF file", type=['pdf])
+        docattachment1 = st.file_uploader("Upload your PDF file", type=['pdf'])
 else:
     docattachment1 = None
 
