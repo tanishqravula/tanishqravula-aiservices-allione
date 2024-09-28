@@ -350,7 +350,7 @@ if len(st.session_state.chat_session) > 0:
 
 #st.session_state.chat.history
 
-cols=st.columns(7)
+cols=st.columns(8)
 
 with cols[0]:
     if lang == 'Español':
@@ -393,6 +393,13 @@ with cols[6]:
     else:
         youtube_chat = st.toggle("Chat with youtube urls", value=False,
                                  help="Activate this mode to chat with a youtube url or youtube video and chat with it") 
+with cols[7]:
+    if lang == 'Español':
+        doc_atachment1 = st.toggle("Adjuntar PDF without OCR", value=False, help="Activa este modo para adjuntar un archivo PDF que el chatbot pueda leerlo")
+    else:
+
+        doc_atachment1 = st.toggle("Attach PDF without OCR", value=False, help="Activate this mode to attach a PDF file and let the chatbot read it")
+
 
 
 if image_atachment:
@@ -422,6 +429,13 @@ if doc_atachment:
         docattachment = st.file_uploader("Upload your PDF, PPT, DOCX file", type=['pdf', 'pptx', 'docx'])
 else:
     docattachment = None
+if doc_atachment1:
+    if lang == 'Español':
+        docattachment1 = st.file_uploader("Sube tu archivo PDF", type=['pdf'])
+    else:
+        docattachment1 = st.file_uploader("Upload your PDF file", type=['pdf])
+else:
+    docattachment1 = None
 
 if csv_excel_atachment:
     if lang == 'Español':
@@ -493,8 +507,8 @@ if website_chat:
             with st.chat_message('model'):
                 #if(generate_gemini("gemini-pro",website_text)=='' and generate_gemini("gemini-pro",content1)==''):
                 st.write(f'Extracted content from website:{website_text}')  
-                st.markdown(to_markdown(generate_gemini("gemini-pro", content)))
-                st.markdown(to_markdown(generate_gemini("gemini-pro",content1)))
+                st.markdown(to_markdown(generate_gemini("gemini-1.5-flash", content)))
+                st.markdown(to_markdown(generate_gemini("gemini-1.5-flash",content1)))
                     #st.write(f'Extracted content from website:{website_text}')
 
 
@@ -562,7 +576,35 @@ if prompt:
                     txt += f'   Attached file (PPT): \n{ppt_content}'
 
 
+    if docattachment1:
+        path =docattachment1.read()
+        file_extension = docattachment.name.split('.')[-1].lower()
+        try:
+            if file_extension == 'pdf':
 
+                if docattachment is not None:
+                    doc = fitz.open(stream=path, filetype="pdf")
+                    doc_content = ""
+                    for page_num in range(len(doc)):
+                        page = doc.load_page(page_num)
+                        doc_content += page.get_text()
+                    #texts, nbPages = images_to_txt(path, 'eng')
+                    #text_data_f = "\n\n".join(texts)
+                    #text_data_text, nbPages_text = convert_pdf_to_txt_file(docattachment)
+                    #doc_content+=text_data_f
+            else:
+                raise ValueError(f'Unsupported file format: {file_extension}')
+
+        except Exception as e:
+            st.error(f"Error processing {file_extension} file: {e}")
+        # Add more specific handling/logging if needed
+
+        else:
+            if file_extension == 'pdf':
+                if lang == 'Español':
+                    txt += f'   Archivo adjunto (PDF): \n{doc_content}'
+                else:
+                    txt += f'   Attached file (PDF): \n{doc_content}'
 
 
     if csvexcelattachment:
