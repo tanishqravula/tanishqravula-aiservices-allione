@@ -687,4 +687,4 @@ for message in st.session_state.chat_session:
     if message['user']['role'] == 'model':
         st.sidebar.markdown(f"**AI:** {message['user']['parts']}")
     else:
-        st.sidebar.markdown(f"**You:** {message['user']['parts]}")
+        st.sidebar.markdown(f"**You:** {message['user']['parts']}")
