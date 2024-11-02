@@ -107,7 +107,7 @@ def load_model() -> genai.GenerativeModel:
     'gemini-pro'.
     :return: an instance of the genai.GenerativeModel class.
     """
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-flash-8b')
     return model
 
 @st.cache_data()
@@ -116,7 +116,7 @@ def load_modelvision() -> genai.GenerativeModel:
     The function load_modelvision loads a generative model for vision tasks using the gemini-pro-vision model.
     :return: an instance of the genai.GenerativeModel class.
     """
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-flash-8b')
     return model
 def to_markdown(text):
     text = text.replace('•', '  *')
