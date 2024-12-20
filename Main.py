@@ -665,11 +665,11 @@ if prompt:
         if len(prmt['parts']) > 0:
             if image_atachment:
                 response = vision.generate_content(prmt['parts'],stream=True)
-                response.resolve()
+                #response.resolve()
             else:
                 response = vision.generate_content(prmt['parts'],stream=True)
-                response.resolve()
-            #response.resolve()
+                #response.resolve()
+            response.resolve()
         else:
             response = st.session_state.chat.send_message(prmt['parts'][0])
 
